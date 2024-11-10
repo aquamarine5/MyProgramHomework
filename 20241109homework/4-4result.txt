@@ -1,0 +1,6 @@
+单词 次数
+China 17
+world 11
+year 9
+development 8
+countries 8
