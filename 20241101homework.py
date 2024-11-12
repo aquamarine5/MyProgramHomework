@@ -14,7 +14,7 @@ def topic5():
     print(f"{','.join([i for i in input().split(',') if int(i)%2!=0])}")
     
 def topic6():
-    data=[int(i) for i in input().split(',')]
+    data=[11,22,33,44,55,66,77,88,99,90]
     print({'k1':[i for i in data if i <66],'k2':[j for j in data if j>66]})
 
 def topic7():
@@ -53,6 +53,14 @@ def topic11():
     cardNums=input('请输入卡号：')
     print('合法' if 10-min([int(x) for x in list(str(sum([sum([int(p) for p in str(int(n)*2)]) for n in cardNums[:-1:2]])+sum([int(n) for n in cardNums[1:-1:2]])))])==int(cardNums[-1]) else '不合法')
     
-
+topic1()
+topic2()
+topic3()
+topic4()
+topic5()
+topic6()
+topic7()
+topic8()
+topic9()
 topic10()
 topic11()
