@@ -13,10 +13,20 @@ def topic3():
         with open("scored.txt","w+",encoding="utf-8") as f2:
             data=["   考号      总成绩"]
             f.readline()
+            sl=[]
             for line in f.readlines():
                 columnData=line.split()
-                data.append(f"{columnData[0]} {int(columnData[1])*0.4+int(columnData[2])*0.6:.2f}")
+                sl.append(fs:=(int(columnData[1])*0.4+int(columnData[2])*0.6))
+                data.append(f"{columnData[0]} {fs:.2f}")
             f2.write("\n".join(data))
+            print(f"学生总人数为{len(sl)}，按总评成绩计，90以上{len([k for k in sl if k>90])}人，"+
+                  f"80~89之间{len([k for k in sl if 80<=k<=89])}人、"+
+                  f"70~79之间{len([k for k in sl if 70<=k<=79])}人、"+
+                  f"60~69之间{len([k for k in sl if 60<=k<=69])}人、"+
+                  f"60分以下{len([k for k in sl if k<60])}人。"+
+                  f"班级总平均分为{sum(sl)/len(sl):.2f}分。")
+    
+    
 def topic4():
     import wordcloud
     with open('4-4.txt','r',encoding="gb2312") as f:
