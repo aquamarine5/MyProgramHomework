@@ -1,14 +1,14 @@
-def topic1():
+def question1():
     with open('file1.txt','r',encoding='gbk') as f:
         content=f.read()
         print(f"文件中包含的字符数为{len(content)}，行数为{content.count('\n')}")
         
-def topic2():
+def question2():
     with open('file1.txt','r',encoding='gbk') as f:
         with open('file2.txt','w+',encoding='utf-8') as f2:
             f2.write("\n".join(f.read().split('\n')[::-1]))
             
-def topic3():
+def question3():
     with open("scores.txt","r",encoding="gbk") as f:
         with open("scored.txt","w+",encoding="utf-8") as f2:
             data=["   考号      总成绩"]
@@ -27,7 +27,7 @@ def topic3():
                   f"班级总平均分为{sum(sl)/len(sl):.2f}分。")
     
     
-def topic4():
+def question4():
     import wordcloud
     with open('4-4.txt','r',encoding="gb2312") as f:
         content=f.read()
@@ -40,7 +40,7 @@ def topic4():
             for word, freq in most_common_words:
                 f.write(f"{word} {freq}\n")
                 
-def topic5():
+def question5():
     import jieba
     import wordcloud
     with open('4-5.txt','r') as f:
@@ -57,8 +57,8 @@ def topic5():
         wordcloud = wordcloud.WordCloud(font_path='msyh.ttc', width=800, height=400, background_color='white',max_words=10).generate_from_frequencies(word_freq)
         wordcloud.to_image().save('4-5.png')
         
-topic1()
-topic2()
-topic3()
-topic4()
-topic5()
+question1()
+question2()
+question3()
+question4()
+question5()

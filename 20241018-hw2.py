@@ -1,26 +1,26 @@
-def topic1():
+def question1():
     print(f"三个数中最大的数字为 {max(int(input(f'请输入第{iter}个数：')) for iter in ['一', '二', '三'])}")
 
 
-def topic2():
+def question2():
     char = input("请输入一个字符：")
     print(f"输出的字符为：{char.lower() if char.isupper() else (char.upper() if char.islower() else char)}")
 
 
-def topic3():
+def question3():
     ans = 1
     for i in range(2, (num := int(input("请输入一个小于10的整数："))) + 1):
         ans *= i
     print(f"1到{num}的乘积为：{ans}")
 
 
-def topic4():
+def question4():
     while (volume := (l := 1) ** 3) <= 100:
         print(f"棱长为{l}的立方体的体积为：{volume}")
         l += 1
 
 
-def topic5():
+def question5():
     while (value := int(input("请输入一个数字："))) != 0:
         c = 0
         clist = []
@@ -33,7 +33,7 @@ def topic5():
     print("程序结束！")
 
 
-def topic6():
+def question6():
     def factorial(x: int) -> int:
         r = 1
         for i in range(2, x + 1):
@@ -46,7 +46,7 @@ def topic6():
     print(f"The result is {ans}")
 
 
-def topic7():
+def question7():
     def isprime(x: int) -> bool:
         for i in range(2, (x // 2) + 1):
             if x % i == 0: return False
@@ -62,7 +62,7 @@ def topic7():
             primeCount = 1
 
 
-def topic8():
+def question8():
     def removeEx(l: list[str], v: str) -> list[str]:
         (r := l.copy()).remove(v)
         return r
@@ -79,7 +79,7 @@ def topic8():
     print(f"There are {numcount} non repeating numbers that meet the requirements.")
 
 
-def topic9():
+def question9():
     print("Da Yan Sequence:")
     for i in range(1, 21):
         if i % 2 == 0:
@@ -90,7 +90,7 @@ def topic9():
             print("\n")
 
 
-def topic10():
+def question10():
     buf = 0
     bbuf = 1
     print("00001", end=" ")
@@ -103,7 +103,7 @@ def topic10():
             print("\n")
 
 
-def topic11():
+def question11():
     rosenums = []
     for i in range(1000, 9999):
         if ((i // 1000) ** 4 + (i // 100 % 10) ** 4 + (i // 10 % 10) ** 4 + (i % 10) ** 4) == i:
@@ -111,7 +111,7 @@ def topic11():
     print(f"The four leaf rose numbers: {' '.join(rosenums)}")
 
 
-def topic12():
+def question12():
     isomorphicnums = []
     for i in range(1, 101):
         if str(i ** 2).endswith(str(i)):
@@ -119,7 +119,7 @@ def topic12():
     print(f"Isomorphic numbers: {' '.join(isomorphicnums)}")
 
 
-def topic13():
+def question13():
     import math
     criterianums = []
     for i in range(1, 5001):
@@ -128,7 +128,7 @@ def topic13():
     print(f"Integers that meets this condition: {' '.join(criterianums)}")
 
 
-def topic14():
+def question14():
     ia = int(input("请输入第一个整数："))
     ib = int(input("请输入第二个整数："))
     p = ia * ib
@@ -139,7 +139,7 @@ def topic14():
     print(f"最小公倍数为 {int(p / ib)}")
 
 
-def topic15():
+def question15():
     ans = a = int(input("请输入a："))
     callist = [str(a)]
     for i in range(2, int(input("请输入n：")) + 1):

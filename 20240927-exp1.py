@@ -2,7 +2,7 @@ import math
 import calendar
 import random
 
-def topic1():
+def question1():
     print("Input (x1, y1) and (x2, y2) to calculate the distance.")
     x1 = float(input("x1:"))
     x2 = float(input("x2:"))
@@ -10,16 +10,16 @@ def topic1():
     y2 = float(input("y2:"))
     print(f"Distance is {math.sqrt(math.pow(x1-x2,2)+math.pow(y1-y2,2))}")
 
-def topic2():
+def question2():
     year = int(input("Input a year to print the calendar: "))
     month = int(input(f"Input the month of {year}: "))
     print(calendar.month(year, month))
 
-def topic3():
+def question3():
     y = int(input("Input a year to judge whether the year is leap year or not: "))
     print(f"{y} is {'' if (y%4==0 and y%100!=0) or y%400==0 else 'not '}leap year.")
 
-def topic4():
+def question4():
     print("Input three numbers and then will sort them.")
     l = [eval(input("Input number1: ")),
         eval(input("Input number2: ")),
@@ -27,14 +27,14 @@ def topic4():
     l.sort()
     print(f"The numbers after sorted: [{', '.join(str(n) for n in l)}]")
 
-def topic5():
+def question5():
     result = []
     for j in range(100, 999):
         if math.pow(j // 100, 3) + math.pow(j // 10 % 10, 3) + math.pow(j % 10, 3) == j:
             result.append(j)
     print(f"There are numbers of Narcissus: [{', '.join(str(n) for n in result)}]")
 
-def topic6():
+def question6():
     guess = -1
     answer = random.randint(0, 10)
     while guess != answer:
@@ -45,7 +45,7 @@ def topic6():
             print("Lesser! Try again.")
     print("Bingo!")
 
-def topic7():
+def question7():
     point = 0
     for k in range(5):
         a = random.randint(0, 100)
@@ -62,4 +62,4 @@ def topic7():
     else:
         print("很遗憾，闯关失败！")
 
-topic7()
+question7()
