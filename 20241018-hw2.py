@@ -1,10 +1,14 @@
 def question1():
-    print(f"三个数中最大的数字为 {max(int(input(f'请输入第{iter}个数：')) for iter in ['一', '二', '三'])}")
+    print(
+        f"三个数中最大的数字为 {max(int(input(f'请输入第{iter}个数：')) for iter in ['一', '二', '三'])}"
+    )
 
 
 def question2():
     char = input("请输入一个字符：")
-    print(f"输出的字符为：{char.lower() if char.isupper() else (char.upper() if char.islower() else char)}")
+    print(
+        f"输出的字符为：{char.lower() if char.isupper() else (char.upper() if char.islower() else char)}"
+    )
 
 
 def question3():
@@ -28,8 +32,12 @@ def question5():
             if value % i == 0:
                 c += i
                 clist.append(str(i))
-        print(f"{'+'.join(clist)}{'=' if c == value else ('<' if c < value else '>')}{value}")
-        print(f"{c}是{'完全数' if c == value else ('不足数' if c < value else '丰沛数')}")
+        print(
+            f"{'+'.join(clist)}{'=' if c == value else ('<' if c < value else '>')}{value}"
+        )
+        print(
+            f"{c}是{'完全数' if c == value else ('不足数' if c < value else '丰沛数')}"
+        )
     print("程序结束！")
 
 
@@ -49,7 +57,8 @@ def question6():
 def question7():
     def isprime(x: int) -> bool:
         for i in range(2, (x // 2) + 1):
-            if x % i == 0: return False
+            if x % i == 0:
+                return False
         return True
 
     primeCount = 1
@@ -67,7 +76,7 @@ def question8():
         (r := l.copy()).remove(v)
         return r
 
-    numlist = ['1', '2', '3', '4']
+    numlist = ["1", "2", "3", "4"]
     numcount = 0
     for firstnum in numlist:
         for secondnum in removeEx(numlist, firstnum):
@@ -106,7 +115,12 @@ def question10():
 def question11():
     rosenums = []
     for i in range(1000, 9999):
-        if ((i // 1000) ** 4 + (i // 100 % 10) ** 4 + (i // 10 % 10) ** 4 + (i % 10) ** 4) == i:
+        if (
+            (i // 1000) ** 4
+            + (i // 100 % 10) ** 4
+            + (i // 10 % 10) ** 4
+            + (i % 10) ** 4
+        ) == i:
             rosenums.append(str(i))
     print(f"The four leaf rose numbers: {' '.join(rosenums)}")
 
@@ -114,13 +128,14 @@ def question11():
 def question12():
     isomorphicnums = []
     for i in range(1, 101):
-        if str(i ** 2).endswith(str(i)):
+        if str(i**2).endswith(str(i)):
             isomorphicnums.append(str(i))
     print(f"Isomorphic numbers: {' '.join(isomorphicnums)}")
 
 
 def question13():
     import math
+
     criterianums = []
     for i in range(1, 5001):
         if math.sqrt(i + 100) % 1 == 0 and math.sqrt(i + 268) % 1 == 0:
@@ -143,6 +158,6 @@ def question15():
     ans = a = int(input("请输入a："))
     callist = [str(a)]
     for i in range(2, int(input("请输入n：")) + 1):
-        ans += a * (10 ** i - 1) // 9
-        callist.append(str(a * (10 ** i - 1) // 9))
+        ans += a * (10**i - 1) // 9
+        callist.append(str(a * (10**i - 1) // 9))
     print(f"{' + '.join(callist)} = {ans}")

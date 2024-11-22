@@ -1,35 +1,43 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
-int main() {
+int main()
+{
     int t;
     cin >> t;
-    while (t--) {
+    while (t--)
+    {
         int n;
         cin >> n;
-        vector<int> a(n+1);
-        for (int i = 1; i <= n; ++i) {
+        vector<int> a(n + 1);
+        for (int i = 1; i <= n; ++i)
+        {
             cin >> a[i];
         }
 
-        int s=0;
-        for (int i = 1; i <= n; ++i) {
-            s+=a[i];
+        int s = 0;
+        for (int i = 1; i <= n; ++i)
+        {
+            s += a[i];
         }
-        int sum=0;
+        int sum = 0;
         int r = 0;
-        for (int i = 1; i < n; ++i) {
+        for (int i = 1; i < n; ++i)
+        {
             sum += a[i];
-            if (s == sum*2) {
-                r=1;
+            if (s == sum * 2)
+            {
+                r = 1;
             }
         }
-        if (r) {
+        if (r)
+        {
             cout << "Yes" << endl;
         }
-        else {
+        else
+        {
             cout << "No" << endl;
         }
     }
