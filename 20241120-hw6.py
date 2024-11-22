@@ -73,6 +73,7 @@ def question3():
     inputEntry=tk.Entry(rw,width=30)
     inputEntry.pack(pady=3)
     def check():
+        # ref: https://zhuanlan.zhihu.com/p/44190338
         def check_builtin(id:str)->bool:
             if len(id)!=18 or not id[:-1].isdigit():
                 return False
