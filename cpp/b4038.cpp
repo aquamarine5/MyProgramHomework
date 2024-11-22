@@ -9,8 +9,8 @@ int main() {
     while (t--) {
         int n;
         cin >> n;
-        vector<int> a(n);
-        for (int i = 0; i < n; ++i) {
+        vector<int> a(n+1);
+        for (int i = 1; i <= n; ++i) {
             cin >> a[i];
         }
 
@@ -23,9 +23,8 @@ int main() {
         for (int i = 1; i < n; ++i) {
             sum += a[i];
             if (s == sum*2) {
-                r++;
+                r=1;
             }
-            if (r > 1)break;
         }
         if (r) {
             cout << "Yes" << endl;

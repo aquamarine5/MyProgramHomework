@@ -1,4 +1,12 @@
 import tkinter as tk
+
+# Enabled High DPI awareness for Windows 10/11
+try:
+    from ctypes import windll
+    windll.shcore.SetProcessDpiAwareness(1)
+except:
+    pass
+
 def question1():
     rw=tk.Tk()
     rw.title("Question 1")
