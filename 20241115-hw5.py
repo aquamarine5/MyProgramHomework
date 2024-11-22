@@ -34,9 +34,26 @@ def question4(name,/,city=None,gender=None,job=None):
         print(f"job: {job}")
         
 def question5():
+    def minv(nl:List[int])->int:
+        mincv=nl[0]
+        for v in nl[1:]:
+            if v<mincv:
+                mincv=v
+        return mincv
+    def maxv(nl:List[int])->int:
+        maxcv=nl[0]
+        for v in nl[1:]:
+            if v>maxcv:
+                maxcv=v
+        return maxcv
+    def sumv(nl:List[int])->int:
+        sumcv=0
+        for v in nl:
+            sumcv+=v
+        return sumcv
     while(n:=input("="*20+"\n请输入逗号分隔的若干整数："))!="":
         nl=list(map(int,n.split(',')))
-        print(f"最大值是{max(nl)}，最小值是{min(nl)}，和是{sum(nl)}")
+        print(f"最大值是{maxv(nl)}，最小值是{minv(nl)}，和是{sumv(nl)}")
 
 def question6():
     def cinput(argname:str)->int:
