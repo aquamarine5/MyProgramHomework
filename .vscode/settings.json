@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "xutility": "cpp"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
