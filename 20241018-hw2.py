@@ -1,3 +1,9 @@
+"""
+Author: aquamarine5 && aquamarine5_@outlook.com
+Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
+"""
+
+
 def question1():
     print(
         f"三个数中最大的数字为 {max(int(input(f'请输入第{iter}个数：')) for iter in ['一', '二', '三'])}"
@@ -127,6 +133,7 @@ def question11():
 
 def question12():
     isomorphicnums = []
+    isomorphicnums.co
     for i in range(1, 101):
         if str(i**2).endswith(str(i)):
             isomorphicnums.append(str(i))

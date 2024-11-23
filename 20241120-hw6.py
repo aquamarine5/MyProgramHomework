@@ -1,3 +1,8 @@
+"""
+Author: aquamarine5 && aquamarine5_@outlook.com
+Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
+"""
+
 import tkinter as tk
 
 # Enabled High DPI awareness for Windows 10/11

@@ -1,3 +1,9 @@
+"""
+Author: aquamarine5 && aquamarine5_@outlook.com
+Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
+"""
+
+
 def question1():
     print(
         f"{''.join([c for c in input('Please input a number and output all bits take out the even number: ') if int(c)%2==0])}"

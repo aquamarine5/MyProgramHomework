@@ -1,3 +1,9 @@
+"""
+Author: aquamarine5 && aquamarine5_@outlook.com
+Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
+"""
+
+
 def question1():
     print(f"{123456:+>25}")
 

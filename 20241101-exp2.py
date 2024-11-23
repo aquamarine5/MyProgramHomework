@@ -1,3 +1,9 @@
+"""
+Author: aquamarine5 && aquamarine5_@outlook.com
+Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
+"""
+
+
 def question1():
     print(f"{','.join([str(i) for i in range(2000,3200) if i%7==0 and i%5!=0])}")
 
