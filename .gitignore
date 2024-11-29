@@ -1,5 +1,6 @@
 test.**
 cpp/*.exe
 cpp/.cph/**
+cpp/*/.cph/**
 
 __pycache__/

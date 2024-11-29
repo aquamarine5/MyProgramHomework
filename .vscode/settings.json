@@ -2,13 +2,14 @@
     "files.associations": {
         "iostream": "cpp",
         "vector": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "algorithm": "cpp"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true
     },
-    "[cpp]":{
+    "[cpp]": {
         "editor.formatOnSave": true
     }
 }
