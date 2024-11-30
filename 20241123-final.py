@@ -5,11 +5,13 @@ Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
 
 import json
 import random
+import select
 from tkinter import colorchooser, filedialog, messagebox
 from typing import List, Optional
 
 import urllib.request
 import tkinter as tk
+from tkinter import ttk
 import urllib.error
 
 CURRENT_TIMETABLE_JSON_PATH = "timetable.json"
@@ -130,7 +132,7 @@ class TimetableJSONImporter(TimetableImporterInterface):
     def __init__(self):
         pass
 
-    def getTimetable(self, file: str = CURRENT_TIMETABLE_JSON_PATH):
+    def getTimetable(self, file: str = CURRENT_TIMETABLE_JSON_PATH) -> Timetable:
         with open(file, "r", encoding="utf-8") as f:
             c = f.read()
             wri = TimetableWakeupRemoteImporter()
@@ -158,7 +160,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
     def parseByJSON(self, timetable_json: str) -> Timetable:
         if timetable_json == "":
             raise ValueError("No timetable found")
-        self.timetable_data = timetable_json["data"].split("\n")
+        self.timetable_data: List[str] = timetable_json["data"].split("\n")
         self.timetable_time = json.loads(self.timetable_data[1])
         self.timetable_details = json.loads(self.timetable_data[2])
         self.timetable_classid = json.loads(self.timetable_data[3])
@@ -195,14 +197,6 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
 
 class TimetableMainRenderer:
     def __init__(self, timeTable: Timetable):
-        # Enabled High DPI awareness for Windows 10/11
-        try:
-            from ctypes import windll
-
-            windll.shcore.SetProcessDpiAwareness(1)
-        except:
-            pass
-
         self.timetable = timeTable
         self.mwin = tk.Tk("Timetable Displayer")
         btnimporter = tk.Button(
@@ -212,6 +206,7 @@ class TimetableMainRenderer:
         self.mwin.mainloop()
 
     def showImporterWindow(self):
+        self.mwin.destroy()
         TimetableImporterSelectorRenderer(self.timetable)
 
 
@@ -300,10 +295,12 @@ class TimetableEditorRenderer:
     def __init__(self, timeTable: Timetable):
         self.timetable = timeTable
         self.mewin = tk.Tk("手动编辑")
-        self.mewin.geometry("600x600")
+        self.mewin.geometry("1100x1100")
+
         self.currentColor = self.generateRandomColor()
         self.selectingList: List[List[int]] = []
-        framebtnlist = tk.Frame(self.mewin)
+        self.useExistedId: Optional[TimetableSingleClassID] = None
+        self.singleSelectingValue: Optional[List[int]] = None
         self.savedids: List[List[Optional[int]]] = [
             [None for _ in range(11)] for _ in range(7)
         ]
@@ -314,69 +311,159 @@ class TimetableEditorRenderer:
             ]
             for _ in range(7)
         ]
+
+        framebtnlist = tk.Frame(self.mewin)
         self.btnlist = [
             [
                 tk.Button(
                     framebtnlist,
                     textvariable=self.tv[i][j],
                     command=lambda i=i, j=j: self.handleButtonCallback(i, j),
-                    height=10,
-                    width=10,
+                    height=2,
+                    width=6,
                 )
-                for i in range(11)
+                for j in range(11)
             ]
-            for j in range(7)
+            for i in range(7)
         ]
         for i in range(7):
             for j in range(11):
                 self.btnlist[i][j].grid(row=i, column=j, padx=5, pady=5)
         framebtnlist.pack(pady=10)
-        labelcreateClass = tk.Label(self.mewin, text="新建课程")
-        labelcreateClass.pack(pady=10)
+
+        lbf = ttk.Labelframe(self.mewin, text="新建课程")
+        lbf.pack(pady=10)
+
         self.tvclassname = tk.StringVar(self.mewin, value="")
         self.tvteachername = tk.StringVar(self.mewin, value="")
         self.tvroomname = tk.StringVar(self.mewin, value="")
         self.tvweekstart = tk.StringVar(self.mewin, value="")
         self.tvweekend = tk.StringVar(self.mewin, value="")
         self.tvclassname.trace_add("write", self.classnameChanged)
-        labelclassname = tk.Label(self.mewin, text="课程名称")
-        labelclassname.pack(pady=10)
-        entryclassname = tk.Entry(self.mewin, textvariable=self.tvclassname)
-        entryclassname.pack(pady=10)
-        entryteachername = tk.Entry(self.mewin, textvariable=self.tvteachername)
-        entryteachername.pack(pady=10)
-        entryroomname = tk.Entry(self.mewin, textvariable=self.tvroomname)
-        entryroomname.pack(pady=10)
-        entryweekstart = tk.Entry(self.mewin, textvariable=self.tvweekstart)
-        entryweekstart.pack(pady=10)
-        entryweekend = tk.Entry(self.mewin, textvariable=self.tvweekend)
-        entryweekend.pack(pady=10)
+
+        frameclassname = tk.Frame(lbf)
+        labelclassname = tk.Label(frameclassname, text="课程名称：")
+        labelclassname.grid(row=0, column=0, padx=3, pady=3)
+        entryclassname = tk.Entry(frameclassname, textvariable=self.tvclassname)
+        entryclassname.grid(row=0, column=1, padx=3, pady=3)
+        frameclassname.pack(pady=8, anchor="w")
+
+        frameteachername = tk.Frame(lbf)
+        labelteachername = tk.Label(frameteachername, text="教师姓名：")
+        labelteachername.grid(row=0, column=0, padx=3, pady=3)
+        entryteachername = tk.Entry(frameteachername, textvariable=self.tvteachername)
+        entryteachername.grid(row=0, column=1, padx=3, pady=3)
+        frameteachername.pack(pady=3, anchor="w")
+
+        frameroomname = tk.Frame(lbf)
+        labelroomname = tk.Label(frameroomname, text="教室名称：")
+        labelroomname.grid(row=0, column=0, padx=3, pady=3)
+        entryroomname = tk.Entry(frameroomname, textvariable=self.tvroomname)
+        entryroomname.grid(row=0, column=1, padx=3, pady=3)
+        frameroomname.pack(pady=3, anchor="w")
+
+        frameweekstart = tk.Frame(lbf)
+        labelweekstart = tk.Label(frameweekstart, text="起始周：")
+        labelweekstart.grid(row=0, column=0, padx=3, pady=3)
+        entryweekstart = tk.Entry(frameweekstart, textvariable=self.tvweekstart)
+        entryweekstart.grid(row=0, column=1, padx=3, pady=3)
+        frameweekstart.pack(pady=3, anchor="w")
+
+        frameweekend = tk.Frame(lbf)
+        labelweekend = tk.Label(frameweekend, text="结束周：")
+        labelweekend.grid(row=0, column=0, padx=3, pady=3)
+        entryweekend = tk.Entry(frameweekend, textvariable=self.tvweekend)
+        entryweekend.grid(row=0, column=1, padx=3, pady=3)
+        frameweekend.pack(pady=3, anchor="w")
+
+        framecolorchooser = tk.Frame(lbf)
         btncolorchooser = tk.Button(
-            self.mewin, text="选择颜色", command=self.chooseColor
+            framecolorchooser, text="选择颜色", command=self.chooseColor
         )
-        btncolorchooser.pack(pady=10)
+        btncolorchooser.grid(row=0, column=0, padx=3, pady=3)
+        labelcolorchooser = tk.Label(framecolorchooser, text="点击随机设置颜色：")
+        labelcolorchooser.grid(row=0, column=1, padx=3, pady=3)
         self.labelcolordisplay = tk.Button(
-            self.mewin, bg=self.currentColor, command=self.regenerateRandomColor
+            framecolorchooser,
+            bg=self.currentColor,
+            command=self.regenerateRandomColor,
+            width=2,
+            height=1,
         )
-        self.labelcolordisplay.pack(pady=10)
-        self.useExistedId: Optional[TimetableSingleClassID] = None
-        self.labelisclassexisted = tk.Label(self.mewin, text="这是一个新课程！")
-        self.labelisclassexisted.pack(pady=10)
+        self.labelcolordisplay.grid(row=0, column=2, padx=3, pady=3)
+        framecolorchooser.pack(pady=3, anchor="w")
+
+        framecid = tk.Frame(lbf)
+        labelcid = tk.Label(framecid, text="选择已有课程：")
+        labelcid.grid(row=0, column=0, padx=3, pady=3)
+        self.combocid = ttk.Combobox(
+            framecid, values=[cid.name for cid in self.timetable.classids]
+        )
+        self.combocid.bind("<<ComboboxSelected>>", self.showCurrentClassid)
+        self.combocid.grid(row=0, column=1, padx=3, pady=3)
+        framecid.pack(pady=3, anchor="w")
+        self.labelisclassexisted = tk.Label(framecid, text="这是一个新课程！")
+        self.labelisclassexisted.grid(row=1, column=0, columnspan=2, padx=3, pady=3)
+
+        framecidbtn = tk.Frame(lbf)
         self.btnuseexisted = tk.Button(
-            self.mewin,
+            framecidbtn,
             text="使用已有课程",
             command=self.useExistedClass,
             state=tk.DISABLED,
         )
-        self.btnuseexisted.pack(pady=10)
-        self.btnadd = tk.Button(
-            self.mewin, text="添加课程", command=self.saveToTimetable
+        self.btnuseexisted.grid(row=0, column=0, padx=3, pady=3)
+        self.btndelete = tk.Button(
+            framecidbtn, text="删除课程", command=self.deleteClass, state=tk.DISABLED
         )
-        self.btnadd.pack(pady=10)
+        self.btndelete.grid(row=0, column=1, padx=3, pady=3)
+        self.btnadd = tk.Button(
+            framecidbtn, text="添加课程", command=self.saveToTimetable
+        )
+        self.btnadd.grid(row=0, column=2, padx=3, pady=3)
+
+        self.btnexit = tk.Button(self.mewin, text="退出", command=self.backToMainWindow)
+        self.btnexit.pack(anchor="e", pady=4)
         self.mewin.mainloop()
 
-    def showCurrentClassid(self):
-        pass
+    def backToMainWindow(self):
+        self.mewin.destroy()
+        TimetableMainRenderer(self.timetable)
+
+    def selectExistedClassid(self):
+        self.useExistedId = self.timetable.classids[
+            [cid.name for cid in self.timetable.classids].index(self.combocid.get())
+        ]
+
+    def updateComboClassidsValues(self):
+        self.combocid.config(values=[cid.name for cid in self.timetable.classids])
+
+    def deleteClass(self):
+        self.btndelete.config(state=tk.DISABLED)
+        classes_to_remove: List[TimetableClassPosition] = []
+        for class_item in self.timetable.classes[self.singleSelectingValue[0]]:
+            start_node = class_item[0]
+            steps = class_item[1]
+            if start_node <= self.singleSelectingValue[1] < start_node + steps:
+                classes_to_remove.append(class_item)
+                for j in range(start_node, start_node + steps):
+                    self.tv[self.singleSelectingValue[0]][j].set(
+                        TimetableEditorRenderer.NOT_SELECTING
+                    )
+
+        for item in classes_to_remove:
+            self.timetable.classes[self.singleSelectingValue[0]].remove(item)
+
+    def showCurrentClassid(self, i: int, j: int):
+        if self.savedids[i][j] is None:
+            return
+        cid = self.timetable.classids[self.savedids[i][j]]
+        self.tvclassname.set(cid.name)
+        self.tvteachername.set(cid.teacher)
+        self.tvroomname.set(cid.location)
+        self.tvweekstart.set(cid.weekTime.startWeek)
+        self.tvweekend.set(cid.weekTime.endWeek)
+        self.btndelete.config(state=tk.NORMAL)
 
     def saveToTimetable(self):
         if self.useExistedId is None:
@@ -399,7 +486,6 @@ class TimetableEditorRenderer:
         for pos in self.selectingList:
             self.tv[pos[0]][pos[1]].set(self.tvclassname.get())
             self.btnlist[pos[0]][pos[1]].config(bg=self.currentColor)
-            self.btnlist[pos[0]][pos[1]].config(command=self.showCurrentClassid)
             self.savedids[pos[0]][pos[1]] = ciid
             osl[pos[0]].append(pos[1])
         for i in range(7):
@@ -480,9 +566,20 @@ class TimetableEditorRenderer:
                 self.selectingList.remove([i, j])
             except ValueError:
                 pass
+        else:
+            self.showCurrentClassid(i, j)
+            self.singleSelectingValue = [i, j]
         print(f"Button {i},{j} clicked")
 
 
 if __name__ == "__main__":
+    # Enabled High DPI awareness for Windows 10/11
+    try:
+        from ctypes import windll
+
+        windll.shcore.SetProcessDpiAwareness(1)
+    except:
+        pass
+
     cTimetable = Timetable.createBlankTimetable()
-    TimetableMainRenderer(cTimetable)
+    TimetableEditorRenderer(cTimetable)
