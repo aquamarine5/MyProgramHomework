@@ -1,14 +1,15 @@
 """
 Author: aquamarine5 && aquamarine5_@outlook.com
 Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
-v1, 2024-12-01.
+Seealso: https://github.com/aquamarine5/MyProgramHomework/blob/main/20241123-final.py
+v3, 2024-12-01.
 """
 
 import datetime
 import json
+import re
 import os
 import random
-import sys
 from tkinter import colorchooser, filedialog, messagebox
 import tkinter
 import tkinter.font
@@ -19,7 +20,7 @@ import tkinter as tk
 from tkinter import ttk
 import urllib.error
 
-CURRENT_TIMETABLE_JSON_PATH = "timetable.json"
+DEFAULT_TIMETABLE_JSON_PATH = "timetable.json"
 
 
 class TimetableClassTime:
@@ -109,7 +110,7 @@ class Timetable:
             True,
         )
 
-    def saveToJSON(self, filepath: str = CURRENT_TIMETABLE_JSON_PATH):
+    def saveToJSON(self, filepath: str = DEFAULT_TIMETABLE_JSON_PATH):
         c: List[str] = [
             '"v1"',
             self._parseColumnTime(),
@@ -119,6 +120,7 @@ class Timetable:
         ]
         with open(filepath, "w", encoding="utf-8") as f:
             f.write("\n".join(c))
+            print("TimetableSaveToJSON: ", filepath)
 
     def _parseDetails(self) -> str:
         return json.dumps({"tableName": self.name, "nodes": len(self.columnTimes)})
@@ -170,15 +172,15 @@ class TimetableJSONImporter(TimetableImporterInterface):
     def __init__(self):
         pass
 
-    def getTimetable(self, file: str = CURRENT_TIMETABLE_JSON_PATH) -> Timetable:
+    def getTimetable(self, file: str = DEFAULT_TIMETABLE_JSON_PATH) -> Timetable:
         with open(file, "r", encoding="utf-8") as f:
             c = f.read()
             wri = TimetableWakeupRemoteImporter()
-            return wri.builtinParseByJSON(c)
+            return wri.parseByJSON(c)
 
     @staticmethod
     def readLocalTimetableJSONIfExisted(
-        filepath: str = CURRENT_TIMETABLE_JSON_PATH,
+        filepath: str = DEFAULT_TIMETABLE_JSON_PATH,
     ) -> Optional[Timetable]:
         if os.path.exists(filepath):
             importer = TimetableJSONImporter()
@@ -191,7 +193,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
     def __init__(self):
         pass
 
-    def getTimetable(self, shareId: str) -> Timetable:
+    def getTimetable(self, shareId: str) -> Optional[Timetable]:
         req = urllib.request.Request(
             f"https://i.wakeup.fun/share_schedule/get?key={shareId}"
         )
@@ -201,47 +203,67 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
                 data = response.read()
                 data_str = data.decode("utf-8")
                 json_data = json.loads(data_str)
+                print(json_data)
         except urllib.error.HTTPError as e:
             raise e
-        return self.parseByJSON(json_data["data"])
+        if json_data["data"] == "":
+            return None
+        return self.builtinParseByJSON(json_data["data"])
 
-    def parseByJSON(self, timetable_json: str) -> Timetable:
+    def parseByJSON(
+        self, timetable_json: str, israndomcolor: bool = False
+    ) -> Timetable:
         if timetable_json == "":
             raise ValueError("No timetable found")
-        self.timetable_data: List[str] = timetable_json["data"].split("\n")
+        self.timetable_data: List[str] = timetable_json.split("\n")
         self.timetable_time = json.loads(self.timetable_data[1])
         self.timetable_details = json.loads(self.timetable_data[2])
         self.timetable_classid = json.loads(self.timetable_data[3])
         self.timetable_classtime = json.loads(self.timetable_data[4])
         self._parseBaseInformation()
-        return self._parseTimetable()
+        return self._parseTimetable(israndomcolor)
 
     def builtinParseByJSON(self, timetable_json: str) -> Timetable:
-        self.timetable_data: List[str] = timetable_json.split("\n")
-        print(self.timetable_data)
-        self.timetable_time = json.loads(self.timetable_data[1])
-        self.timetable_details = json.loads(self.timetable_data[2])
-        self.timetable_classid = json.loads(self.timetable_data[3])
-        self.timetable_classtime = json.loads(self.timetable_data[4])
-        self._parseBaseInformation()
-        return self._parseTimetable()
+        return self.parseByJSON(timetable_json, True)
 
     def _parseBaseInformation(self):
         self.timetable_name: str = self.timetable_details["tableName"]
         classtimes: List[TimetableColumnTime] = []
         for ctp in self.timetable_time[: int(self.timetable_details["nodes"])]:
-            print(11, ctp)
+            print("TimetableColumnTime.load: ", ctp)
             classtimes.append(TimetableColumnTime(ctp["startTime"], ctp["endTime"]))
-        print(classtimes)
         self.timetable_columntimes = classtimes
 
-    def _parseTimetable(self) -> Timetable:
+    def _parseRGBAColorToRGB(self, rgba_color: str) -> str:
+        return rgba_color[:-2]
+
+    def _parseColor(self, color: str) -> str:
+        if len(color) > 7:
+            return self._parseRGBAColorToRGB(color)
+        else:
+            return color
+
+    def _randomColor(self) -> str:
+        r = random.randint(127, 255)
+        g = random.randint(127, 255)
+        b = random.randint(127, 255)
+        return f"#{r:02X}{g:02X}{b:02X}"
+
+    def _parseTimetable(self, israndomcolor: bool) -> Timetable:
         ttl: List[List[TimetableClassPosition]] = [[] for _ in range(7)]
         tpl: List[TimetableClassIdentity] = []
         for clsid in self.timetable_classid:
             tpl.append(
                 TimetableClassIdentity(
-                    clsid["courseName"], None, None, None, clsid["color"]
+                    clsid["courseName"],
+                    None,
+                    None,
+                    None,
+                    (
+                        self._randomColor()
+                        if israndomcolor
+                        else self._parseColor(clsid["color"])
+                    ),
                 )
             )
         for cls in self.timetable_classtime:
@@ -266,11 +288,11 @@ class TimetableMainRenderer:
         if self.timetable.istemplated:
             self.popupCreateNewTimetable()
         self.mwin = tk.Tk()
-        self.mwin.geometry("1000x900")
+        self.mwin.geometry("1250x950")
         self.mwin.title("课表界面")
         self.lastButton: int = -1
 
-        lbframemain = ttk.LabelFrame(self.mwin, text="课表")
+        lbframemain = tk.LabelFrame(self.mwin, text="课表")
 
         labelweeks = [
             tk.Label(lbframemain, text=weekname)
@@ -295,21 +317,21 @@ class TimetableMainRenderer:
         for index, cawt in enumerate(self.timetable.classes):
             for ct in cawt:
                 for i in range(
-                    ct.time.startTime, ct.time.endTime - ct.time.startTime + 2
+                    ct.time.startTime + 1, ct.time.endTime - ct.time.startTime + 2
                 ):
                     self.cvmap[index][i] = ct.id
 
         for i in range(7):
             for j in range(11):
-                if self.cvmap[i][j] == -1:
-                    btn = tk.Button(
-                        lbframemain,
-                        text="无课",
-                        bg="SystemButtonFace",
-                        height=2,
-                        width=6,
-                    )
-                    btn.grid(row=j + 1, column=i + 1, padx=5, pady=5)
+                btn = tk.Button(
+                    lbframemain,
+                    text="无课",
+                    bg="SystemButtonFace",
+                    height=2,
+                    width=6,
+                    state=tk.DISABLED,
+                )
+                btn.grid(row=j + 1, column=i + 1, padx=5, pady=5)
 
         self.cpbtnlists: List[tk.Button] = []
         for index, cawt in enumerate(self.timetable.classes):
@@ -318,7 +340,7 @@ class TimetableMainRenderer:
                     continue
                 cid = self.timetable.classids[ct.id]
                 step = ct.time.endTime - ct.time.startTime + 1
-                start_col = ct.time.startTime + 1
+                start_col = ct.time.startTime
                 iii = len(self.cpbtnlists)
                 btn = tk.Button(
                     lbframemain,
@@ -327,11 +349,13 @@ class TimetableMainRenderer:
                     height=2,
                     width=6,
                     cursor="hand2",
+                    wraplength=70,
+                    justify=tk.CENTER,
                     command=lambda cp=ct, btn_index=iii: self.handleButtonCallback(
                         cp, btn_index
                     ),
-                    borderwidth=5,
-                    relief=tk.FLAT,
+                    borderwidth=2,
+                    relief=tk.RAISED,
                 )
                 btn.grid(
                     row=start_col,
@@ -342,28 +366,34 @@ class TimetableMainRenderer:
                     sticky="nsew",
                 )
                 self.cpbtnlists.append(btn)
-        lbframemain.grid(row=0, column=0, padx=10, pady=10, rowspan=2)
+        lbframemain.grid(row=0, column=0, padx=20, pady=20, rowspan=3)
 
-        lbframedetail = ttk.Labelframe(self.mwin, text="课程详情")
+        lbframedetail = tk.LabelFrame(self.mwin, text="课程详情")
 
         frameclassname = tk.Frame(lbframedetail)
         labelclassname = tk.Label(frameclassname, text="课程名称：")
         labelclassname.grid(row=0, column=0, padx=3, pady=3)
-        self.labelvclassname = tk.Label(frameclassname, text="")
+        self.labelvclassname = tk.Label(
+            frameclassname, text="", wraplength=200, justify=tk.LEFT
+        )
         self.labelvclassname.grid(row=0, column=1, padx=3, pady=3)
         frameclassname.pack(padx=20, pady=4, anchor="w")
 
         frameteachername = tk.Frame(lbframedetail)
         labelteachername = tk.Label(frameteachername, text="教师姓名：")
         labelteachername.grid(row=0, column=0, padx=3, pady=3)
-        self.labelvteachername = tk.Label(frameteachername, text="")
+        self.labelvteachername = tk.Label(
+            frameteachername, text="", wraplength=200, justify=tk.LEFT
+        )
         self.labelvteachername.grid(row=0, column=1, padx=3, pady=3)
         frameteachername.pack(padx=20, pady=4, anchor="w")
 
         frameroomname = tk.Frame(lbframedetail)
         labelroomname = tk.Label(frameroomname, text="教室名称：")
         labelroomname.grid(row=0, column=0, padx=3, pady=3)
-        self.labelvroomname = tk.Label(frameroomname, text="")
+        self.labelvroomname = tk.Label(
+            frameroomname, text="", wraplength=200, justify=tk.LEFT
+        )
         self.labelvroomname.grid(row=0, column=1, padx=3, pady=3)
         frameroomname.pack(padx=20, pady=4, anchor="w")
 
@@ -381,12 +411,14 @@ class TimetableMainRenderer:
         self.labelvweekend.grid(row=0, column=1, padx=3, pady=3)
         frameweekend.pack(padx=20, pady=4, anchor="w")
 
-        lbframedetail.grid(row=0, column=1, padx=10, pady=10, sticky="we")
+        lbframedetail.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         lbframenextclass = tk.LabelFrame(self.mwin, text="下一节课")
         nextclass: TimetableClassPosition = self.findNextClass()
         framencclassname = tk.Frame(lbframenextclass)
-        labelncclassname = tk.Label(framencclassname, text="课程名称：")
+        labelncclassname = tk.Label(
+            framencclassname, text="课程名称：", justify=tk.LEFT, wraplength=200
+        )
         labelncclassname.grid(row=0, column=0, padx=3, pady=3)
         labelvncclassname = tk.Label(
             framencclassname, text=self.timetable.classids[nextclass.id].name
@@ -395,7 +427,9 @@ class TimetableMainRenderer:
         framencclassname.pack(padx=20, pady=4, anchor="w")
 
         framencteachername = tk.Frame(lbframenextclass)
-        labelncteachername = tk.Label(framencteachername, text="教师姓名：")
+        labelncteachername = tk.Label(
+            framencteachername, text="教师姓名：", justify=tk.LEFT, wraplength=200
+        )
         labelncteachername.grid(row=0, column=0, padx=3, pady=3)
         labelvncteachername = tk.Label(
             framencteachername, text=self.timetable.classids[nextclass.id].teacher
@@ -404,7 +438,9 @@ class TimetableMainRenderer:
         framencteachername.pack(padx=20, pady=4, anchor="w")
 
         framencclassroom = tk.Frame(lbframenextclass)
-        labelncclassroom = tk.Label(framencclassroom, text="教室地点：")
+        labelncclassroom = tk.Label(
+            framencclassroom, text="教室地点：", justify=tk.LEFT, wraplength=200
+        )
         labelncclassroom.grid(row=0, column=0, padx=3, pady=3)
         labelvncclassroom = tk.Label(
             framencclassroom, text=self.timetable.classids[nextclass.id].location
@@ -412,8 +448,22 @@ class TimetableMainRenderer:
         labelvncclassroom.grid(row=0, column=1, padx=3, pady=3)
         framencclassroom.pack(padx=20, pady=4, anchor="w")
 
-        lbframenextclass.grid(row=1, column=1, padx=10, pady=10)
+        lbframenextclass.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+        framebtncontrol = tk.Frame(self.mwin)
+        btnedit = tk.Button(framebtncontrol, text="编辑课表", command=self.showEditor)
+        btnedit.grid(row=0, column=0, padx=10, pady=10)
+        btnimport = tk.Button(
+            framebtncontrol, text="覆盖并导入新课表", command=self.showImporterWindow
+        )
+        btnimport.grid(row=0, column=1, padx=10, pady=10)
+        framebtncontrol.grid(row=2, column=1, padx=10, pady=10)
+
         self.mwin.mainloop()
+
+    def showEditor(self):
+        self.mwin.destroy()
+        TimetableEditorRenderer(self.timetable)
 
     def findNextClass(self) -> TimetableClassPosition:
         now = datetime.datetime.now()
@@ -449,10 +499,10 @@ class TimetableMainRenderer:
         return nearest_position
 
     def handleButtonCallback(self, cp: TimetableClassPosition, btnindex: int):
-        print(btnindex)
+        print("Query details of btnindex: ", btnindex)
         if self.lastButton != -1:
-            self.cpbtnlists[self.lastButton].config(relief=tk.FLAT)
-        self.cpbtnlists[btnindex].config(relief=tk.SOLID)
+            self.cpbtnlists[self.lastButton].config(relief=tk.RAISED, borderwidth=2)
+        self.cpbtnlists[btnindex].config(relief=tk.SOLID, borderwidth=5)
         self.lastButton = btnindex
         cid: TimetableClassIdentity = self.timetable.classids[cp.id]
         self.labelvclassname.config(text=cid.name)
@@ -513,7 +563,7 @@ class TimetableWakeupImporterRenderer:
         self.timetable.istemplated = False
         self.mwiwin = tk.Tk()
         self.mwiwin.title("导入课表：从WakeUp导入")
-        txttitle = tk.Label(self.mwiwin, text="请输入WakeUp分享链接")
+        txttitle = tk.Label(self.mwiwin, text="请输入WakeUp分享口令")
         txttitle.pack(padx=10)
         self.entry = tk.Entry(self.mwiwin)
         self.entry.pack(pady=10)
@@ -526,9 +576,35 @@ class TimetableWakeupImporterRenderer:
         labelnotice.pack(pady=10)
         self.mwiwin.mainloop()
 
+    def getSharedToken(self) -> Optional[str]:
+        l = self.entry.get()
+        if l.startswith(
+            "这是来自「WakeUp课程表」的课表分享，30分钟内有效哦，如果失效请朋友再分享一遍叭。为了保护隐私我们选择不监听你的剪贴板，请复制这条消息后，打开App的主界面，右上角第二个按钮 -> 从分享口令导入，按操作提示即可完成导入~分享口令为"
+        ):
+            pattern = (
+                r"这是来自「WakeUp课程表」的课表分享.*分享口令为「([a-zA-Z0-9-]+)」"
+            )
+            match = re.search(pattern, l)
+            if match:
+                return match.group(1)
+            else:
+                return None
+        else:
+            if re.search(r"[a-zA-Z0-9-]+", l):
+                return l
+            else:
+                return None
+
     def importTimetable(self):
         importer = TimetableWakeupRemoteImporter()
-        self.timetable = importer.getTimetable(self.entry.get())
+        token = self.getSharedToken()
+        if token is None:
+            messagebox.showerror("错误", "口令格式错误")
+            return
+        self.timetable = importer.getTimetable(token)
+        if self.timetable is None:
+            messagebox.showerror("错误", "口令无效或课表为空")
+            return
         self.timetable.saveToJSON()
         messagebox.showinfo("导入成功", "课表已导入成功")
         self.mwiwin.destroy()
@@ -598,6 +674,8 @@ class TimetableEditorRenderer:
                     height=2,
                     width=6,
                     cursor="hand2",
+                    wraplength=70,
+                    justify=tk.CENTER,
                 )
                 for j in range(11)
             ]
@@ -628,7 +706,7 @@ class TimetableEditorRenderer:
         frameright = tk.Frame(self.mewin)
         frameright.grid(row=0, column=1, padx=10, pady=10)
 
-        lbfdetails = ttk.LabelFrame(frameright, text="课表详情")
+        lbfdetails = tk.LabelFrame(frameright, text="课表详情")
         frametimetablename = tk.Frame(lbfdetails)
         labeltimetablename = tk.Label(frametimetablename, text="课表名称：")
         labeltimetablename.grid(row=0, column=0, padx=3, pady=3)
@@ -651,7 +729,7 @@ class TimetableEditorRenderer:
         labeldonotedited.pack(pady=3)
         lbfdetails.grid(row=0, column=0, padx=3, pady=10, sticky="ew")
 
-        lbfclassinfo = ttk.Labelframe(frameright, text="新建课程")
+        lbfclassinfo = tk.LabelFrame(frameright, text="新建课程")
         lbfclassinfo.grid(row=1, column=0, padx=10, pady=10)
 
         self.tvclassname = tk.StringVar(self.mewin, value="")
