@@ -1,0 +1,5 @@
+"v1"
+[{"startTime": "08:00", "endTime": "08:45"}, {"startTime": "08:55", "endTime": "09:40"}, {"startTime": "10:10", "endTime": "10:55"}, {"startTime": "11:05", "endTime": "11:50"}, {"startTime": "14:30", "endTime": "15:15"}, {"startTime": "15:25", "endTime": "16:10"}, {"startTime": "16:20", "endTime": "17:05"}, {"startTime": "17:15", "endTime": "18:00"}, {"startTime": "19:00", "endTime": "19:45"}, {"startTime": "19:55", "endTime": "20:40"}, {"startTime": "20:50", "endTime": "21:35"}]
+{"tableName": "\u6cb3\u5317\u5927\u5b66\u8bfe\u7a0b\u8868", "nodes": 11}
+[{"color": "#C8A2EB", "courseName": "1"}, {"color": "#AEA599", "courseName": "11"}]
+[{"day": 2, "startNode": 1, "step": 1, "id": 0, "room": "", "teacher": "", "startWeek": 12, "endWeek": 15}, {"day": 3, "startNode": 1, "step": 1, "id": 0, "room": "", "teacher": "", "startWeek": 12, "endWeek": 15}, {"day": 4, "startNode": 1, "step": 1, "id": 0, "room": "", "teacher": "", "startWeek": 12, "endWeek": 15}, {"day": 6, "startNode": 1, "step": 4, "id": 1, "room": "", "teacher": "", "startWeek": 2, "endWeek": 4}]
