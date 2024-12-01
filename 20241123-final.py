@@ -1,14 +1,17 @@
 """
 Author: aquamarine5 && aquamarine5_@outlook.com
 Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
+v1, 2024-12-01.
 """
 
-from calendar import c
+import datetime
 import json
 import os
 import random
 import sys
 from tkinter import colorchooser, filedialog, messagebox
+import tkinter
+import tkinter.font
 from typing import List, Optional
 
 import urllib.request
@@ -263,15 +266,18 @@ class TimetableMainRenderer:
         if self.timetable.istemplated:
             self.popupCreateNewTimetable()
         self.mwin = tk.Tk()
+        self.mwin.geometry("1000x900")
         self.mwin.title("课表界面")
-        framemain = tk.Frame(self.mwin)
+        self.lastButton: int = -1
+
+        lbframemain = ttk.LabelFrame(self.mwin, text="课表")
 
         labelweeks = [
-            tk.Label(framemain, text=weekname)
+            tk.Label(lbframemain, text=weekname)
             for weekname in ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
         ]
         labelclasstimes = [
-            tk.Label(framemain, text=classtimes)
+            tk.Label(lbframemain, text=classtimes)
             for classtimes in [
                 f"{time.startTime}-{time.endTime}"
                 for time in self.timetable.columnTimes
@@ -282,6 +288,8 @@ class TimetableMainRenderer:
         for index, labelclasstime in enumerate(labelclasstimes):
             labelclasstime.grid(row=index + 1, column=0, padx=5)
 
+        nowweekday = datetime.datetime.now().weekday()
+        labelweeks[nowweekday].config(font=tkinter.font.Font(weight="bold", size=12))
         self.cvmap: List[List[int]] = [[-1 for _ in range(11)] for _ in range(7)]
 
         for index, cawt in enumerate(self.timetable.classes):
@@ -295,7 +303,7 @@ class TimetableMainRenderer:
             for j in range(11):
                 if self.cvmap[i][j] == -1:
                     btn = tk.Button(
-                        framemain,
+                        lbframemain,
                         text="无课",
                         bg="SystemButtonFace",
                         height=2,
@@ -303,37 +311,155 @@ class TimetableMainRenderer:
                     )
                     btn.grid(row=j + 1, column=i + 1, padx=5, pady=5)
 
+        self.cpbtnlists: List[tk.Button] = []
         for index, cawt in enumerate(self.timetable.classes):
             for ct in cawt:
                 if ct == []:
                     continue
                 cid = self.timetable.classids[ct.id]
                 step = ct.time.endTime - ct.time.startTime + 1
-
-                # 检查该位置是否已经有按钮
                 start_col = ct.time.startTime + 1
-
-                # 创建新按钮
+                iii = len(self.cpbtnlists)
                 btn = tk.Button(
-                    framemain,
+                    lbframemain,
                     text=cid.name,
                     bg=cid.color,
                     height=2,
                     width=6,
                     cursor="hand2",
+                    command=lambda cp=ct, btn_index=iii: self.handleButtonCallback(
+                        cp, btn_index
+                    ),
+                    borderwidth=5,
+                    relief=tk.FLAT,
                 )
-                # 设置按钮位置，使用 columnspan 跨越多列
                 btn.grid(
                     row=start_col,
                     column=index + 1,
                     rowspan=step,
                     padx=5,
                     pady=5,
-                    sticky="nsew",  # 让按钮填充整个网格空间
+                    sticky="nsew",
                 )
+                self.cpbtnlists.append(btn)
+        lbframemain.grid(row=0, column=0, padx=10, pady=10, rowspan=2)
 
-        framemain.pack(padx=10, pady=10)
+        lbframedetail = ttk.Labelframe(self.mwin, text="课程详情")
+
+        frameclassname = tk.Frame(lbframedetail)
+        labelclassname = tk.Label(frameclassname, text="课程名称：")
+        labelclassname.grid(row=0, column=0, padx=3, pady=3)
+        self.labelvclassname = tk.Label(frameclassname, text="")
+        self.labelvclassname.grid(row=0, column=1, padx=3, pady=3)
+        frameclassname.pack(padx=20, pady=4, anchor="w")
+
+        frameteachername = tk.Frame(lbframedetail)
+        labelteachername = tk.Label(frameteachername, text="教师姓名：")
+        labelteachername.grid(row=0, column=0, padx=3, pady=3)
+        self.labelvteachername = tk.Label(frameteachername, text="")
+        self.labelvteachername.grid(row=0, column=1, padx=3, pady=3)
+        frameteachername.pack(padx=20, pady=4, anchor="w")
+
+        frameroomname = tk.Frame(lbframedetail)
+        labelroomname = tk.Label(frameroomname, text="教室名称：")
+        labelroomname.grid(row=0, column=0, padx=3, pady=3)
+        self.labelvroomname = tk.Label(frameroomname, text="")
+        self.labelvroomname.grid(row=0, column=1, padx=3, pady=3)
+        frameroomname.pack(padx=20, pady=4, anchor="w")
+
+        frameweekstart = tk.Frame(lbframedetail)
+        labelweekstart = tk.Label(frameweekstart, text="起始周：")
+        labelweekstart.grid(row=0, column=0, padx=3, pady=3)
+        self.labelvweekstart = tk.Label(frameweekstart, text="")
+        self.labelvweekstart.grid(row=0, column=1, padx=3, pady=3)
+        frameweekstart.pack(padx=20, pady=4, anchor="w")
+
+        frameweekend = tk.Frame(lbframedetail)
+        labelweekend = tk.Label(frameweekend, text="结束周：")
+        labelweekend.grid(row=0, column=0, padx=3, pady=3)
+        self.labelvweekend = tk.Label(frameweekend, text="")
+        self.labelvweekend.grid(row=0, column=1, padx=3, pady=3)
+        frameweekend.pack(padx=20, pady=4, anchor="w")
+
+        lbframedetail.grid(row=0, column=1, padx=10, pady=10, sticky="we")
+
+        lbframenextclass = tk.LabelFrame(self.mwin, text="下一节课")
+        nextclass: TimetableClassPosition = self.findNextClass()
+        framencclassname = tk.Frame(lbframenextclass)
+        labelncclassname = tk.Label(framencclassname, text="课程名称：")
+        labelncclassname.grid(row=0, column=0, padx=3, pady=3)
+        labelvncclassname = tk.Label(
+            framencclassname, text=self.timetable.classids[nextclass.id].name
+        )
+        labelvncclassname.grid(row=0, column=1, padx=3, pady=3)
+        framencclassname.pack(padx=20, pady=4, anchor="w")
+
+        framencteachername = tk.Frame(lbframenextclass)
+        labelncteachername = tk.Label(framencteachername, text="教师姓名：")
+        labelncteachername.grid(row=0, column=0, padx=3, pady=3)
+        labelvncteachername = tk.Label(
+            framencteachername, text=self.timetable.classids[nextclass.id].teacher
+        )
+        labelvncteachername.grid(row=0, column=1, padx=3, pady=3)
+        framencteachername.pack(padx=20, pady=4, anchor="w")
+
+        framencclassroom = tk.Frame(lbframenextclass)
+        labelncclassroom = tk.Label(framencclassroom, text="教室地点：")
+        labelncclassroom.grid(row=0, column=0, padx=3, pady=3)
+        labelvncclassroom = tk.Label(
+            framencclassroom, text=self.timetable.classids[nextclass.id].location
+        )
+        labelvncclassroom.grid(row=0, column=1, padx=3, pady=3)
+        framencclassroom.pack(padx=20, pady=4, anchor="w")
+
+        lbframenextclass.grid(row=1, column=1, padx=10, pady=10)
         self.mwin.mainloop()
+
+    def findNextClass(self) -> TimetableClassPosition:
+        now = datetime.datetime.now()
+        current_weekday = now.weekday()
+        current_time = now.hour * 60 + now.minute
+
+        def parseTimeToMinute(time_str: str) -> int:
+            h, m = map(int, time_str.split(":"))
+            return h * 60 + m
+
+        nearest_position = None
+        min_time_diff = float("inf")
+        for day_offset in range(7):
+            check_day = (current_weekday + day_offset) % 7
+            day_classes = self.timetable.classes[check_day]
+            for class_pos in day_classes:
+                if not class_pos:
+                    continue
+                start_time = parseTimeToMinute(
+                    self.timetable.columnTimes[class_pos.time.startTime - 1].startTime
+                )
+                if day_offset == 0:
+                    if start_time <= current_time:
+                        continue
+                    time_diff = start_time - current_time
+                else:
+                    time_diff = day_offset * 24 * 60 + (start_time - current_time)
+
+                if time_diff < min_time_diff:
+                    min_time_diff = time_diff
+                    nearest_position = class_pos
+
+        return nearest_position
+
+    def handleButtonCallback(self, cp: TimetableClassPosition, btnindex: int):
+        print(btnindex)
+        if self.lastButton != -1:
+            self.cpbtnlists[self.lastButton].config(relief=tk.FLAT)
+        self.cpbtnlists[btnindex].config(relief=tk.SOLID)
+        self.lastButton = btnindex
+        cid: TimetableClassIdentity = self.timetable.classids[cp.id]
+        self.labelvclassname.config(text=cid.name)
+        self.labelvteachername.config(text=cid.teacher)
+        self.labelvroomname.config(text=cid.location)
+        self.labelvweekstart.config(text=cid.weekTime.startWeek)
+        self.labelvweekend.config(text=cid.weekTime.endWeek)
 
     def popupCreateNewTimetable(self):
         r = messagebox.askokcancel(
@@ -841,10 +967,9 @@ if __name__ == "__main__":
     except:
         pass
 
+    # cTimetable = Timetable.createBlankTimetable()
+
     cTimetable = TimetableJSONImporter.readLocalTimetableJSONIfExisted()
     if cTimetable is None:
         cTimetable = Timetable.createHBUTemplatedTimetable()
-    if sys.argv[1] == "main":
-        TimetableMainRenderer(cTimetable)
-    else:
-        TimetableEditorRenderer(cTimetable)
+    TimetableMainRenderer(cTimetable)
