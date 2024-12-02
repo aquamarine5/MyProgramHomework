@@ -2,7 +2,8 @@
 Author: aquamarine5 && aquamarine5_@outlook.com
 Copyright (c) 2024 by @aquamarine5, RC. All Rights Reversed.
 Seealso: https://github.com/aquamarine5/MyProgramHomework/blob/main/20241123-final.py
-v3, 2024-12-01.
+Code version: v4, 2024-12-02.
+Comment version: v1, 2024-12-02.
 """
 
 import datetime
@@ -10,44 +11,53 @@ import json
 import re
 import os
 import random
-from tkinter import colorchooser, filedialog, messagebox
-import tkinter
-import tkinter.font
-from typing import List, Optional
-
-import urllib.request
 import tkinter as tk
 from tkinter import ttk
+from tkinter import colorchooser, filedialog, messagebox
+import tkinter.font
+from typing import List, Optional
+import urllib.request
 import urllib.error
 
+# 默认的课程表数据文件存储路径
 DEFAULT_TIMETABLE_JSON_PATH = "timetable.json"
 
 
 class TimetableClassTime:
+    """课程持续时间"""
+
     def __init__(self, startTime: int, endTime: int):
         self.startTime = startTime
         self.endTime = endTime
 
 
 class TimetableClassWeekTime:
+    """课程起始周和结束周"""
+
     def __init__(self, startWeek: int, endWeek: int):
         self.startWeek = startWeek
         self.endWeek = endWeek
 
 
 class TimetableColumnTime:
+    """课程表时间段"""
+
     def __init__(self, startTime: str, endTime: str):
         self.startTime = startTime
         self.endTime = endTime
 
 
 class TimetableClassPosition:
+    """单个课程的位置"""
+
     def __init__(self, cid: int, time: TimetableClassTime):
         self.id = cid
         self.time = time
 
 
 class TimetableClassIdentity:
+    """课程信息"""
+
     def __init__(
         self,
         name: str,
@@ -64,6 +74,8 @@ class TimetableClassIdentity:
 
 
 class Timetable:
+    """课表数据"""
+
     def __init__(
         self,
         classes: List[List[TimetableClassPosition]],
@@ -79,6 +91,7 @@ class Timetable:
         self.istemplated = istemplated
 
     def addClassId(self, cid: TimetableClassIdentity) -> int:
+        """添加一个新的课程信息，并返回其对于的数字ID"""
         self.classids.append(cid)
         return len(self.classids) - 1
 
@@ -111,6 +124,9 @@ class Timetable:
         )
 
     def saveToJSON(self, filepath: str = DEFAULT_TIMETABLE_JSON_PATH):
+        """将课程表数据保存到JSON文件\n
+        请注意 timetable.json 并不是一个合法的JSON文件，因为它使用回车符进行数据分隔，这一点有点像CSV格式的JSON文件，目的是为了与WakeUp课程表的导入数据互适配。
+        """
         c: List[str] = [
             '"v1"',
             self._parseColumnTime(),
@@ -208,7 +224,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
             raise e
         if json_data["data"] == "":
             return None
-        return self.builtinParseByJSON(json_data["data"])
+        return self._builtinParseByJSON(json_data["data"])
 
     def parseByJSON(
         self, timetable_json: str, israndomcolor: bool = False
@@ -223,7 +239,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
         self._parseBaseInformation()
         return self._parseTimetable(israndomcolor)
 
-    def builtinParseByJSON(self, timetable_json: str) -> Timetable:
+    def _builtinParseByJSON(self, timetable_json: str) -> Timetable:
         return self.parseByJSON(timetable_json, True)
 
     def _parseBaseInformation(self):
@@ -288,7 +304,7 @@ class TimetableMainRenderer:
         if self.timetable.istemplated:
             self.popupCreateNewTimetable()
         self.mwin = tk.Tk()
-        self.mwin.geometry("1250x950")
+        self.mwin.geometry("1150x950")
         self.mwin.title("课表界面")
         self.lastButton: int = -1
 
@@ -366,6 +382,22 @@ class TimetableMainRenderer:
                     sticky="nsew",
                 )
                 self.cpbtnlists.append(btn)
+
+        # *** w1 w2 w3 w4 w5 w6 w7
+        # t01
+        # t02
+        # t03
+        # t04
+        # t05
+        # t06
+        # t07
+        # t08
+        # t09
+        # t10
+        # t11
+        # lbframemain 同样通过 grid(row, column) 进行渲染。
+        # 与 TimetableEditorRenderer 不同的是，他还设置了 rowspan 属性使课程按钮能够跨行显示。
+
         lbframemain.grid(row=0, column=0, padx=20, pady=20, rowspan=3)
 
         lbframedetail = tk.LabelFrame(self.mwin, text="课程详情")
@@ -533,7 +565,7 @@ class TimetableImporterSelectorRenderer:
         framebtn = tk.Frame(self.miswin)
         framebtn.pack(pady=10)
         btnweb = tk.Button(
-            self.miswin, text="从WakeUp导入", command=self.showWakeupImporter
+            self.miswin, text="从WakeUp分享口令导入", command=self.showWakeupImporter
         )
         btnweb.pack(pady=10)
         btnjson = tk.Button(
@@ -571,9 +603,13 @@ class TimetableWakeupImporterRenderer:
         btn.pack(pady=10)
         labelnotice = tk.Label(
             self.mwiwin,
-            text="请注意：导入课表后，原有课表将被覆盖！\nWakeUp课表导入功能需要网络连接。\n分享口令有效期仅30分钟，请及时导入。\nWakeUp课程表和本结课作业无关。",
+            text="""请注意：导入课表后，原有课表将被覆盖！
+WakeUp课表导入功能需要网络连接。
+分享口令有效期仅30分钟，请及时导入。
+受限于Tkinter的颜色显示功能，课程颜色将随机生成而不遵循导入的设置。
+WakeUp课程表和本结课作业无关。""",
         )
-        labelnotice.pack(pady=10)
+        labelnotice.pack(pady=30)
         self.mwiwin.mainloop()
 
     def getSharedToken(self) -> Optional[str]:
@@ -598,6 +634,7 @@ class TimetableWakeupImporterRenderer:
     def importTimetable(self):
         importer = TimetableWakeupRemoteImporter()
         token = self.getSharedToken()
+        print("WakeupSharedToken: ", token)
         if token is None:
             messagebox.showerror("错误", "口令格式错误")
             return
@@ -615,6 +652,10 @@ class TimetableJSONImporterRenderer:
     def __init__(self, timeTable: Timetable):
         self.timeTable = timeTable
         self.timeTable.istemplated = False
+        messagebox.showwarning(
+            "警告",
+            "通常情况下，请不要使用JSON导入功能。默认的课程表数据文件存储在timetable.json内。",
+        )
         self.mjwin = tk.Tk()
         self.mjwin.title("导入课表：从JSON导入")
         txttitle = tk.Label(self.mjwin, text="请输入JSON文件路径")
@@ -701,6 +742,21 @@ class TimetableEditorRenderer:
         for i in range(7):
             for j in range(11):
                 self.btnlist[i][j].grid(row=j + 1, column=i + 1, padx=5, pady=5)
+
+        # *** w1 w2 w3 w4 w5 w6 w7
+        # t01
+        # t02
+        # t03
+        # t04
+        # t05
+        # t06
+        # t07
+        # t08
+        # t09
+        # t10
+        # t11
+        # framebtnlist 通过 grid(row, column) 进行渲染。
+
         framebtnlist.grid(row=0, column=0, padx=10, pady=10)
 
         frameright = tk.Frame(self.mewin)
@@ -835,7 +891,7 @@ class TimetableEditorRenderer:
                 if c == []:
                     continue
                 cid = self.timetable.classids[c.id]
-                for i in range(c.time.startTime, c.time.endTime + 1):
+                for i in range(c.time.startTime - 1, c.time.endTime):
                     self.tv[index][i].set(cid.name)
                     self.btnlist[index][i].config(bg=cid.color)
                     self.savedids[index][i] = c.id
@@ -913,7 +969,7 @@ class TimetableEditorRenderer:
         if self.tvclassname.get() == "":
             messagebox.showerror("错误", "课程名称不能为空！")
             return
-        if self.selectingList == []:
+        if not self.selectingList:
             messagebox.showerror("错误", "未选择任何课程时间！")
             return
 
@@ -1045,9 +1101,17 @@ if __name__ == "__main__":
     except:
         pass
 
-    # cTimetable = Timetable.createBlankTimetable()
-
     cTimetable = TimetableJSONImporter.readLocalTimetableJSONIfExisted()
     if cTimetable is None:
+        # 如果当前不存在课表，则新建一个课表
+        # 调用 cTimetable = Timetable.createBlankTimetable() 生成一个空白课表
+        # 调用 cTimetable = Timetable.createHBUTemplatedTimetable() 生成一个以河北大学为模板的课表
         cTimetable = Timetable.createHBUTemplatedTimetable()
     TimetableMainRenderer(cTimetable)
+
+    # 程序首先使用 TimetableMainRenderer 渲染课表主界面
+    # 通过判断 timetable.istemplated 来判断是否为空的模板课表
+    # 如果是模板课表，渲染 TimetableImporterSelectorRenderer 引导用户选择导入方式
+    # TimetableJSONImporterRenderer 从JSON导入课表
+    # TimetableWakeupImporterRenderer 从WakeUp分享口令导入课表（依赖于 TimetableJSONImporter）
+    # TimetableEditorRenderer 手动编辑课表
