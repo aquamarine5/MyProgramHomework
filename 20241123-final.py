@@ -6,8 +6,7 @@ License: AGPLv3.
 Produced by human, not by AI, although some code may be co-completed by Github Copilot.
 Only used for the final homework of the class of Python at Hebei University (HBU).
 Try to find out the funny point of the code. :)
-Code version: v6, 2024-12-02.
-Comment version: v3, 2024-12-02.
+Code version: v8, 2024-12-07 (comment version: v3)
 """
 
 import datetime
@@ -225,6 +224,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
                 json_data = json.loads(data_str)
                 print(json_data)
         except urllib.error.HTTPError as e:
+            messagebox.showerror("错误", "无法获取课表数据")
             raise e
         if json_data["data"] == "":
             return None
@@ -458,7 +458,10 @@ class TimetableMainRenderer:
         )
         labelncclassname.grid(row=0, column=0, padx=3, pady=3)
         labelvncclassname = tk.Label(
-            framencclassname, text=self.timetable.classids[nextclass.id].name
+            framencclassname,
+            text=self.timetable.classids[nextclass.id].name,
+            wraplength=200,
+            justify=tk.LEFT,
         )
         labelvncclassname.grid(row=0, column=1, padx=3, pady=3)
         framencclassname.pack(padx=20, pady=4, anchor="w")
@@ -469,7 +472,10 @@ class TimetableMainRenderer:
         )
         labelncteachername.grid(row=0, column=0, padx=3, pady=3)
         labelvncteachername = tk.Label(
-            framencteachername, text=self.timetable.classids[nextclass.id].teacher
+            framencteachername,
+            text=self.timetable.classids[nextclass.id].teacher,
+            justify=tk.LEFT,
+            wraplength=200,
         )
         labelvncteachername.grid(row=0, column=1, padx=3, pady=3)
         framencteachername.pack(padx=20, pady=4, anchor="w")
@@ -574,7 +580,7 @@ class TimetableImporterSelectorRenderer:
         self.timetable = timeTable
         self.miswin = tk.Tk()
         self.miswin.title("Timetable Importer")
-        self.miswin.geometry("300x300")
+        self.miswin.geometry("400x400")
         txttitle = tk.Label(self.miswin, text="请选择导入方式")
         txttitle.pack(padx=10)
         framebtn = tk.Frame(self.miswin)
@@ -589,7 +595,35 @@ class TimetableImporterSelectorRenderer:
         btnjson.pack(pady=10)
         btneditor = tk.Button(self.miswin, text="手动编辑", command=self.showEditor)
         btneditor.pack(pady=10)
+        btndefault = tk.Button(
+            self.miswin,
+            text="使用河北大学\n软工甲班课表模板",
+            command=self.useDefaultTimetableTemplate,
+        )
+        btndefault.pack(pady=10)
+        labeldefault = tk.Label(
+            self.miswin,
+            text="这将使用远程服务器上\n存储的模板课程表\n以覆盖当前课程表数据。",
+        )
+        labeldefault.pack(pady=2)
         self.miswin.mainloop()
+
+    def useDefaultTimetableTemplate(self):
+        req = urllib.request.Request("http://dy.aquamarine5.fun/img/timetable.json")
+        try:
+            with urllib.request.urlopen(req) as response:
+                data = response.read()
+                data_str = data.decode("utf-8")
+                normalized_str = "\n".join(filter(None, data_str.splitlines()))
+                with open(DEFAULT_TIMETABLE_JSON_PATH, "w", encoding="utf-8") as f:
+                    print(data_str)
+                    f.write(normalized_str)
+        except urllib.error.HTTPError as e:
+            messagebox.showerror("错误", "无法下载模板课表")
+            raise e
+        self.miswin.destroy()
+        self.timetable = TimetableJSONImporter.readLocalTimetableJSONIfExisted()
+        TimetableMainRenderer(self.timetable)
 
     def showWakeupImporter(self):
         self.miswin.destroy()
