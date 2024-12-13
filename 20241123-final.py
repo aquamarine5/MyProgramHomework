@@ -6,7 +6,7 @@ License: AGPLv3.
 Produced by human, not by AI, although some code may be co-completed by Github Copilot.
 Only used for the final homework of the class of Python at Hebei University (HBU).
 Try to find out the funny point of the code. :)
-Code version: v8, 2024-12-07 (comment version: v3)
+Code version: v9, 2024-12-13 (comment version: v3)
 """
 
 import datetime
@@ -76,7 +76,7 @@ class TimetableClassIdentity:
         self.weekTime = weekTime
 
 
-class Timetable:
+class TimetableData:
     """课表数据"""
 
     def __init__(
@@ -99,14 +99,14 @@ class Timetable:
         return len(self.classids) - 1
 
     @staticmethod
-    def createBlankTimetable() -> "Timetable":
-        return Timetable(
+    def createBlankTimetable() -> "TimetableData":
+        return TimetableData(
             [[[] for _ in range(7)] for _ in range(11)], [], [], "新建课程表", True
         )
 
     @staticmethod
-    def createHBUTemplatedTimetable() -> "Timetable":
-        return Timetable(
+    def createHBUTemplatedTimetable() -> "TimetableData":
+        return TimetableData(
             [[[] for _ in range(7)] for _ in range(11)],
             [],
             [
@@ -131,7 +131,7 @@ class Timetable:
         请注意 timetable.json 并不是一个合法的JSON文件，因为它使用回车符进行数据分隔，这一点有点像CSV格式的JSON文件，目的是为了与WakeUp课程表的导入数据互适配。
         """
         c: List[str] = [
-            '"v1"',
+            '"timetable-data:v1"',
             self._parseColumnTime(),
             self._parseDetails(),
             self._parseClassId(),
@@ -183,7 +183,7 @@ class TimetableImporterInterface:
     def __init__(self):
         raise NotImplementedError("This is an interface class")
 
-    def getTimetable(self) -> Timetable:
+    def getTimetable(self) -> TimetableData:
         raise NotImplementedError("This is an interface class")
 
 
@@ -191,7 +191,7 @@ class TimetableJSONImporter(TimetableImporterInterface):
     def __init__(self):
         pass
 
-    def getTimetable(self, file: str = DEFAULT_TIMETABLE_JSON_PATH) -> Timetable:
+    def getTimetable(self, file: str = DEFAULT_TIMETABLE_JSON_PATH) -> TimetableData:
         with open(file, "r", encoding="utf-8") as f:
             c = f.read()
             wri = TimetableWakeupRemoteImporter()
@@ -200,7 +200,7 @@ class TimetableJSONImporter(TimetableImporterInterface):
     @staticmethod
     def readLocalTimetableJSONIfExisted(
         filepath: str = DEFAULT_TIMETABLE_JSON_PATH,
-    ) -> Optional[Timetable]:
+    ) -> Optional[TimetableData]:
         if os.path.exists(filepath):
             importer = TimetableJSONImporter()
             return importer.getTimetable(filepath)
@@ -212,7 +212,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
     def __init__(self):
         pass
 
-    def getTimetable(self, shareId: str) -> Optional[Timetable]:
+    def getTimetable(self, shareId: str) -> Optional[TimetableData]:
         req = urllib.request.Request(
             f"https://i.wakeup.fun/share_schedule/get?key={shareId}"
         )
@@ -232,7 +232,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
 
     def parseByJSON(
         self, timetable_json: str, israndomcolor: bool = False
-    ) -> Timetable:
+    ) -> TimetableData:
         if timetable_json == "":
             raise ValueError("No timetable found")
         self.timetable_data: List[str] = timetable_json.split("\n")
@@ -243,7 +243,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
         self._parseBaseInformation()
         return self._parseTimetable(israndomcolor)
 
-    def _builtinParseByJSON(self, timetable_json: str) -> Timetable:
+    def _builtinParseByJSON(self, timetable_json: str) -> TimetableData:
         return self.parseByJSON(timetable_json, True)
 
     def _parseBaseInformation(self):
@@ -269,7 +269,7 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
         b = random.randint(127, 255)
         return f"#{r:02X}{g:02X}{b:02X}"
 
-    def _parseTimetable(self, israndomcolor: bool) -> Timetable:
+    def _parseTimetable(self, israndomcolor: bool) -> TimetableData:
         ttl: List[List[TimetableClassPosition]] = [[] for _ in range(7)]
         tpl: List[TimetableClassIdentity] = []
         for clsid in self.timetable_classid:
@@ -299,11 +299,11 @@ class TimetableWakeupRemoteImporter(TimetableImporterInterface):
             ctpl.teacher = cls["teacher"]
             ctpl.location = cls["room"]
             ctpl.weekTime = TimetableClassWeekTime(cls["startWeek"], cls["endWeek"])
-        return Timetable(ttl, tpl, self.timetable_columntimes, self.timetable_name)
+        return TimetableData(ttl, tpl, self.timetable_columntimes, self.timetable_name)
 
 
 class TimetableMainRenderer:
-    def __init__(self, timeTable: Timetable):
+    def __init__(self, timeTable: TimetableData):
         self.timetable = timeTable
         if self.timetable.istemplated:
             self.popupCreateNewTimetable()
@@ -332,7 +332,9 @@ class TimetableMainRenderer:
             labelclasstime.grid(row=index + 1, column=0, padx=5)
 
         nowweekday = datetime.datetime.now().weekday()
-        labelweeks[nowweekday].config(font=tkinter.font.Font(weight="bold", size=12))
+        labelweeks[nowweekday].config(
+            font=tkinter.font.Font(weight="bold", size=12, underline=True)
+        )
         self.cvmap: List[List[int]] = [[-1 for _ in range(11)] for _ in range(7)]
 
         for index, cawt in enumerate(self.timetable.classes):
@@ -386,6 +388,7 @@ class TimetableMainRenderer:
                     pady=5,
                     sticky="nsew",
                 )
+                print(f"Renderer.Button: {cid.name} at {start_col}, {index}")
                 self.cpbtnlists.append(btn)
 
         # *** w1 w2 w3 w4 w5 w6 w7
@@ -491,6 +494,18 @@ class TimetableMainRenderer:
         labelvncclassroom.grid(row=0, column=1, padx=3, pady=3)
         framencclassroom.pack(padx=20, pady=4, anchor="w")
 
+        framencclasstime = tk.Frame(lbframenextclass)
+        labelncclassroom = tk.Label(
+            framencclasstime, text="上课时间：", justify=tk.LEFT, wraplength=200
+        )
+        labelncclassroom.grid(row=0, column=0, padx=3, pady=3)
+        labelvncclassroom = tk.Label(
+            framencclasstime,
+            text=f"{self.timetable.columnTimes[nextclass.time.startTime-1].startTime}-{self.timetable.columnTimes[nextclass.time.endTime-1].endTime}",
+        )
+        labelvncclassroom.grid(row=0, column=1, padx=3, pady=3)
+        framencclasstime.pack(padx=20, pady=4, anchor="w")
+
         lbframenextclass.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
 
         framebtncontrol = tk.Frame(self.mwin)
@@ -544,7 +559,9 @@ class TimetableMainRenderer:
                 if timediff < mintimeandTryChrIt:
                     mintimeandTryChrIt = timediff
                     nearestclasspos = classposition
-
+        print(
+            f"NextClass.found: id = {nearestclasspos.id}, time = {nearestclasspos.time.startTime}"
+        )
         return nearestclasspos
 
     def handleButtonCallback(self, cp: TimetableClassPosition, btnindex: int):
@@ -576,7 +593,7 @@ class TimetableMainRenderer:
 
 
 class TimetableImporterSelectorRenderer:
-    def __init__(self, timeTable: Timetable):
+    def __init__(self, timeTable: TimetableData):
         self.timetable = timeTable
         self.miswin = tk.Tk()
         self.miswin.title("Timetable Importer")
@@ -615,6 +632,7 @@ class TimetableImporterSelectorRenderer:
                 data = response.read()
                 data_str = data.decode("utf-8")
                 normalized_str = "\n".join(filter(None, data_str.splitlines()))
+                print("TimetableLoad: from remote server")
                 with open(DEFAULT_TIMETABLE_JSON_PATH, "w", encoding="utf-8") as f:
                     print(data_str)
                     f.write(normalized_str)
@@ -639,7 +657,7 @@ class TimetableImporterSelectorRenderer:
 
 
 class TimetableWakeupImporterRenderer:
-    def __init__(self, timeTable: Timetable):
+    def __init__(self, timeTable: TimetableData):
         self.timetable = timeTable
         self.timetable.istemplated = False
         self.mwiwin = tk.Tk()
@@ -698,7 +716,7 @@ WakeUp课程表和本结课作业无关。""",
 
 
 class TimetableJSONImporterRenderer:
-    def __init__(self, timeTable: Timetable):
+    def __init__(self, timeTable: TimetableData):
         self.timeTable = timeTable
         self.timeTable.istemplated = False
         messagebox.showwarning(
@@ -732,7 +750,7 @@ class TimetableEditorRenderer:
     SELECTING = "√"
     NOT_SELECTING = ""
 
-    def __init__(self, timeTable: Timetable):
+    def __init__(self, timeTable: TimetableData):
         self.timetable = timeTable
         self.timetable.istemplated = False
         self.mewin = tk.Tk()
@@ -1164,7 +1182,7 @@ if __name__ == "__main__":
         # 如果当前不存在课表，则新建一个课表
         # 调用 cTimetable = Timetable.createBlankTimetable() 生成一个空白课表
         # 调用 cTimetable = Timetable.createHBUTemplatedTimetable() 生成一个以河北大学为模板的课表
-        cTimetable = Timetable.createHBUTemplatedTimetable()
+        cTimetable = TimetableData.createHBUTemplatedTimetable()
     TimetableMainRenderer(cTimetable)
 
     # 程序首先使用 TimetableMainRenderer 渲染课表主界面

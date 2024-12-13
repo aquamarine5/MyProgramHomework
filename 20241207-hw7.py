@@ -28,17 +28,16 @@ class Question1:
         return -3 * x**3 - 3 * x**2 + 4 * math.sin(x)
 
     def get_quadrant_color(self, x, y):
-        if x >= 0 and y >= 0:  # 第一象限
+        if x >= 0 and y >= 0:
             return "black"
-        elif x < 0 and y >= 0:  # 第二象限
+        elif x < 0 and y >= 0:
             return "red"
-        elif x < 0 and y < 0:  # 第三象限
+        elif x < 0 and y < 0:
             return "green"
-        else:  # 第四象限
+        else:
             return "blue"
 
     def draw_radiation(self):
-        """绘制辐射线"""
         x = -1.7
         while x <= 1.7:
             y = self.formula_calculate(x)
