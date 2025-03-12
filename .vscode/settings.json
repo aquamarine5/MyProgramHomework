@@ -3,7 +3,8 @@
         "iostream": "cpp",
         "vector": "cpp",
         "xutility": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "queue": "c"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
