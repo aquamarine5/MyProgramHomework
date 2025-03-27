@@ -1,6 +1,7 @@
 test.**
 test*.*
 cpp/*.exe
+c/*.exe
 cpp/.cph/**
 cpp/*/.cph/**
 
