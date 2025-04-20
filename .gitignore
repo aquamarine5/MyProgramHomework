@@ -6,3 +6,4 @@ cpp/.cph/**
 cpp/*/.cph/**
 
 __pycache__/
+*.exe
