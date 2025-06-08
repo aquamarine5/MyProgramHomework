@@ -1,0 +1,21 @@
+{
+    "manifestVersion": 2,
+    "latestStable": {
+        "changelog": "这个版本必须更新。任何人都需要更新。由于学习通API接口更新，老版本的签到方案将有几率在老师端被判断为作弊签到，在新版本中修复了这个问题。",
+        "downloadUrl": "107000001-1.7.0-stable-250516-org.aquamarine5.brainspark.chaoxingsignfaker.apk",
+        "forceInstall": true,
+        "packageName": "org.aquamarine5.brainspark.chaoxingsignfaker",
+        "releaseDate": 1747572195814,
+        "versionCode": 107010001,
+        "versionName": "1.7.1-stable-250518"
+    },
+    "latestTest": {
+        "changelog": "1.5 大版本更新！强烈建议更新！\n有什么新功能？\n1. 现在代签功能支持位置签到和拍照签到啦，这下舍友不用睁眼也能签到了。\n2. 修复了获取位置速度较慢的BUG。\n3. 优化了界面显示。\n4. 修复了部分崩溃BUG。\n5. 第五人格启动。",
+        "downloadUrl": "105009169-1.5.0-rc2-250502-org.aquamarine5.brainspark.chaoxingsignfaker.apk",
+        "forceInstall": false,
+        "packageName": "org.aquamarine5.brainspark.chaoxingsignfaker",
+        "releaseDate": 1746198010742,
+        "versionCode": 105009169,
+        "versionName": "1.5.0-rc2-250502"
+    }
+}

@@ -22,7 +22,7 @@ int main()
     }
     else
     {
-        afterstr[index] = '\0'; // Add null terminator to the end of the new string
+        afterstr[index] = '\0';
         printf("the string after deleting the character is:%s\n", afterstr);
     }
 }

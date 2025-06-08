@@ -1,4 +1,8 @@
 #include <stdio.h>
+inline int abs(int x)
+{
+    return x < 0 ? -x : x;
+}
 void inputArray(int a[], int n)
 {
     for (int i = 0; i < n; ++i)

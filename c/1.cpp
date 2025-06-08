@@ -10,9 +10,8 @@ int f(int a)
 }
 int main()
 {
-    int a = 2, i;
-    for (i = 0; i < 3; ++i)
-    {
-        cout << f(a) << endl;
-    }
+    char s[] = "sitts";
+    void *p;
+    p = s;
+    printf("%d\n", *s);
 }

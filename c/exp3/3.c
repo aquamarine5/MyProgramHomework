@@ -21,18 +21,15 @@ void outputArray(int a[], int n)
 }
 void rightShiftArray(int a[], int n, int digit)
 {
-    int b[100];
-    for (int i = n - digit; i < n; ++i)
+    int temp[100];
+    for (int i = 0; i < n; i++)
     {
-        b[i - n + digit] = a[i];
+        temp[i] = a[i];
     }
-    for (int j = 0; j < n - digit; ++j)
+
+    for (int i = 0; i < n; i++)
     {
-        swap(&a[j], &a[j + digit]);
-    }
-    for (int k = 0; k < digit; ++k)
-    {
-        a[k] = b[k];
+        a[(i + digit) % n] = temp[i];
     }
 }
 // 1 2 3 4 5 6
