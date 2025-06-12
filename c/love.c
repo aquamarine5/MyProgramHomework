@@ -18,19 +18,11 @@ int strcon(char *s, char t)
 }
 int main()
 {
-    char t;
-    char str[] = "HELLO,WORLD!";
-    printf("请输入要查找的字符:");
-    scanf_s("%c", &t);
-    int length = strcon(str, t);
-    if (length != -1)
-    {
-        printf("%c第一次出现在%d处\n", t, length);
-    }
-    else
-    {
-        printf("%c不存在于字符串中\n", t);
-    }
-    system("pause");
-    return 0;
+    int a[100] = 1;
+}
+int fib(int n)
+{
+    if (n == 1 || n == 2)
+        return 1;
+    return fib(n - 1) + fib(n - 2);
 }
