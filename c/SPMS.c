@@ -186,6 +186,7 @@ void queryById(StudentList *list)
     {
         printf("未找到学号为 %s 的学生。\n", id);
     }
+    pause();
 }
 
 void queryByName(StudentList *list)
@@ -208,6 +209,32 @@ void queryByName(StudentList *list)
     {
         printf("未找到姓名为 %s 的学生。\n", name);
     }
+    pause();
+}
+void swapStudent(Student *a, Student *b)
+{
+    char tempId[20];
+    strcpy(tempId, a->id);
+    char tempName[20];
+    strcpy(tempName, a->name);
+    GENDER tempGender = a->gender;
+    float tempScore1 = a->score1;
+    float tempScore2 = a->score2;
+    float tempScore3 = a->score3;
+
+    strcpy(a->id, b->id);
+    strcpy(a->name, b->name);
+    a->gender = b->gender;
+    a->score1 = b->score1;
+    a->score2 = b->score2;
+    a->score3 = b->score3;
+
+    strcpy(b->id, tempId);
+    strcpy(b->name, tempName);
+    b->gender = tempGender;
+    b->score1 = tempScore1;
+    b->score2 = tempScore2;
+    b->score3 = tempScore3;
 }
 void sortDescendingByScore(StudentList *list)
 {
@@ -216,24 +243,23 @@ void sortDescendingByScore(StudentList *list)
         printf("学生信息不足，无法排序。\n");
         return;
     }
-    bool isDescending;
-    while (!isDescending)
+    bool swapped;
+    Student *currentStudent;
+    do
     {
-        isDescending = true;
-        Student *current = list->head->next;
-        while (current->next != NULL)
+        swapped = false;
+        currentStudent = list->head->next;
+        while (currentStudent->next != NULL)
         {
-            if (totalScores(current) < totalScores(current->next))
+            if (totalScores(currentStudent) < totalScores(currentStudent->next))
             {
-                Student temp = *current;
-                *current = *current->next;
-                *current->next = temp;
-                current->next->next = current->next;
-                isDescending = false;
+                swapStudent(currentStudent, currentStudent->next);
+                swapped = true;
             }
-            current = current->next;
+            currentStudent = currentStudent->next;
         }
-    }
+    } while (swapped);
+    printf("学生信息已按总分从高到低排序。\n");
     displayStudent(list);
 }
 void searchFailedStudents(StudentList *list)
@@ -264,9 +290,8 @@ void searchFailedStudents(StudentList *list)
         failedCount = 0;
     }
     if (!found)
-    {
         printf("没有找到有两科目不及格的学生。\n");
-    }
+    pause();
 }
 void fileSave(StudentList *list)
 {
@@ -287,6 +312,7 @@ void fileSave(StudentList *list)
     fclose(file);
 
     printf("学生信息已保存到文件。\n");
+    pause();
 }
 void fileLoad(StudentList *list)
 {
@@ -321,6 +347,7 @@ void fileLoad(StudentList *list)
     fclose(file);
 
     printf("学生信息已从文件加载。\n");
+    pause();
 }
 void deleteStudent(StudentList *list)
 {
