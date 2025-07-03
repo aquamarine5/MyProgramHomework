@@ -1,28 +1,44 @@
-#include "stdio.h"
-#include "stdlib.h"
-int strcon(char *s, char t)
-{
-    int count = 0;
-    // s是存储字符串类型变量的地址
-    // t是用户输入的要查找的字符
-    while (*s != '\0') // 类型一致可以比较
-    {
-        if (*s == t)
-        {
-            return count;
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef struct Node{
+    int id;
+    char name[20];
+    struct Node* next;
+} Node;
+
+Node* createHead(){
+    Node *head=(Node*)malloc(sizeof(Node));
+    head->next=NULL;
+    return head;
+}
+
+void insert1(Node* head){
+    Node *tail=head,*temp;
+    while(1){
+        temp=(Node*)malloc(sizeof(Node));
+        scanf("%d %s",&temp->id,temp->name);
+        if(strcmp(temp->name,"x")==0){
+            free(temp);
+            break;
         }
-        s++; // s别忘了也要++
-        count++;
+
+        temp->next=NULL;
+        tail->next=temp;
+        tail=temp;
     }
-    return -1; // 没找到用户要的那个字符
 }
-int main()
-{
-    int a[100] = 1;
-}
-int fib(int n)
-{
-    if (n == 1 || n == 2)
-        return 1;
-    return fib(n - 1) + fib(n - 2);
+
+void insert2(Node* head){
+    Node *tail=head,*temp;
+    int n;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        temp=(Node*)malloc(sizeof(Node));
+        scanf("%d %s",&temp->id,temp->name);
+
+        temp->next=NULL;
+        tail->next=temp;
+        tail=temp;
+    }
 }
