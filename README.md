@@ -22,10 +22,15 @@
 - 实验3（20241119，exp3）
 - **结课作业**（20241123，final）
 
+## Contents (C)
+
+- 上课留的章节课后作业。
+- **结课作业** (SPMS.c)
+
 > [!TIP]
 > 作业4以及其附件以文件夹格式存储。
 
-## Presentation of Final
+## Presentation of Final (Python)
 
 ![5.PNG](https://s2.loli.net/2024/12/15/3ztZXa1nOMrkLdW.png)
 ![10.PNG](https://s2.loli.net/2024/12/15/YNhjACnZVuPemOz.png)
