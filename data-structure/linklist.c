@@ -45,7 +45,7 @@ LinkListWithTail createInOrder()
 {
     datatype value;
     LinkListWithTail L = init();
-    LinkNode *tail = L->next;
+    LinkNode *tail = L;
     scanf("%d", &value);
     while (value != END_FLAG)
     {
@@ -103,11 +103,12 @@ int length(LinkList L)
 }
 LinkNode *get(LinkListWithTail L, int index)
 {
-    LinkNode *node = L->next;
-    for (int i = 1; i < index; i++)
+    LinkNode *node = L;
+    for (int i = 0; i < index; i++)
     {
         if (node->next == NULL)
             return NULL;
+        node = node->next;
     }
     return node->next;
 }
@@ -156,26 +157,13 @@ result insert(LinkListWithTail L, datatype data, int index)
 
 result delete(LinkListWithTail L, int index)
 {
-    int i = 1;
-    LinkNode *node = L->next, *temp;
-    while (node->next != NULL)
-    {
-        // [i-1] -> [i] -> [i+1]
-        // [i-1] -> [i+1]
-        if (i == index - 1)
-        {
-            temp = node->next;
-            if (temp == NULL)
-                return WRONG_INDEX;
-            node->next = temp->next;
-            free(temp);
-            return SUCCESS;
-        }
-        else
-            i++;
-    }
-    if (i < index)
+    LinkNode *prev = get(L, index - 1), *temp;
+    if (index < 1 || prev == NULL)
         return WRONG_INDEX;
+    temp = prev->next;
+    prev->next = temp->next;
+    free(temp);
+    return SUCCESS;
 }
 
 void reverse(LinkListWithTail L)
