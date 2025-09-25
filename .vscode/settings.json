@@ -23,7 +23,8 @@
         "xiosbase": "c",
         "xmemory": "c",
         "xstring": "c",
-        "xtree": "c"
+        "xtree": "c",
+        "stdbool.h": "c"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
