@@ -7,6 +7,18 @@
 - MyProgramHomework 根据 `AGPLv3` 进行开源，所以无论如何使用其中的代码都需要购买授权或进行代码开源。
 - 授权费：1个Github Star
 
+## data-structure
+
+- `linklist.c` 链表
+- `seqlist.c` 顺序表
+- `seqstack.c` 顺序栈
+- `doublylinklist.c` 双向链表
+- `question-solutions/operation-stack.c` 中缀表达式计算
+
+## CUMCM2025Problems-A
+
+- 2025年数学建模A题Python代码。
+
 ## Contents (Python)
 
 - 作业1（20240923，hw1）
@@ -25,6 +37,7 @@
 ## Contents (C)
 
 - 上课留的章节课后作业。
+- 程序设计实验作业。
 - **结课作业** (SPMS.c)
 
 > [!TIP]
