@@ -24,7 +24,11 @@
         "xmemory": "c",
         "xstring": "c",
         "xtree": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "limits.h": "c",
+        "stdlib.h": "c",
+        "corecrt_malloc.h": "c",
+        "corecrt.h": "c"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
@@ -32,5 +36,8 @@
     },
     "[cpp]": {
         "editor.formatOnSave": true
+    },
+    "[json]": {
+        "editor.formatOnSave": false
     }
 }

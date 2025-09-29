@@ -1,3 +1,7 @@
+/*
+ * @Author: aquamarine5 && aquamarine5_@outlook.com
+ * Copyright (c) 2025 by @aquamarine5, RC. All Rights Reversed.
+ */
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>

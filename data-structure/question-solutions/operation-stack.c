@@ -229,6 +229,16 @@ int calculate(char s[])
     pop(numberStack, &finalResult);
     return finalResult;
 }
+// 9+(3-1)*3+10/2
+// 931-3*+10 2/+
+// +/
+
+// 3*2^(4+2*2-1*3)-5
+// 32422*-13*+^*-5
+// *^
+
+// 32422*+13*-^*5-
+// -
 int main()
 {
     char s[30];
