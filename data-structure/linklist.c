@@ -1,9 +1,11 @@
 /*
  * @Author: aquamarine5 && aquamarine5_@outlook.com
  * Copyright (c) 2025 by @aquamarine5, RC. All Rights Reversed.
+ * lovely lonely, but be a quokka.
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define datatype int
 #define result int
@@ -24,23 +26,17 @@ typedef struct LinkNode
 
 typedef LinkNode *LinkList;
 
+typedef LinkNode LNode;
 typedef LinkList LinkListWithTail;
 
 // head is blank data
 // [_blank] -> NULL -or- [datatype] -> [datetype]
+// by default, we use LinkListWithTail as LinkList to follow the standard of alphacoding.
 LinkListWithTail init()
 {
     LinkList L = (LinkList)malloc(sizeof(LinkNode));
     L->next = NULL;
     return L;
-}
-
-void insertAtTail(LinkNode *L, datatype data)
-{
-    LinkNode *node = (LinkNode *)malloc(sizeof(LinkNode));
-    node->data = data;
-    node->next = NULL;
-    L->next = node;
 }
 
 // create at tail
@@ -94,17 +90,6 @@ int length(LinkListWithTail L)
     return i;
 }
 
-int length(LinkList L)
-{
-    int i = 0;
-    LinkNode *node = L;
-    while (node != NULL)
-    {
-        node = node->next;
-        i++;
-    }
-    return i;
-}
 LinkNode *get(LinkListWithTail L, int index)
 {
     LinkNode *node = L;
@@ -116,18 +101,6 @@ LinkNode *get(LinkListWithTail L, int index)
     }
     return node->next;
 }
-LinkNode *locate(LinkList L, datatype data)
-{
-    LinkNode *node = L;
-    while (node->next != NULL)
-    {
-        if (node->data == data)
-            return node;
-        else
-            node = node->next;
-        return NO_RESULT;
-    }
-}
 
 LinkNode *locate(LinkListWithTail L, datatype data)
 {
@@ -137,9 +110,29 @@ LinkNode *locate(LinkListWithTail L, datatype data)
             return node;
         else
             node = node->next;
-    return NO_RESULT;
+    return NULL;
 }
 
+// insert at start, caution possible descending.
+void append(LinkListWithTail L, datatype data)
+{
+    LinkNode *node = (LinkNode *)malloc(sizeof(LinkNode));
+    node->data = data;
+    node->next = L->next;
+    L->next = node;
+}
+void print(LinkListWithTail L)
+{
+    LinkNode *temp = L->next;
+    while (temp != NULL)
+    {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+// insert front at index (start with 1)
+// seealso: book.
 result insert(LinkListWithTail L, datatype data, int index)
 {
     // 0 1 2 3 4 5 length:6
@@ -158,8 +151,8 @@ result insert(LinkListWithTail L, datatype data, int index)
     prev->next = node;
     return SUCCESS;
 }
-
-result delete(LinkListWithTail L, int index)
+// delete an element at index (start with 1).
+result erase(LinkListWithTail L, int index)
 {
     LinkNode *prev = get(L, index - 1), *temp;
     if (index < 1 || prev == NULL)
@@ -169,27 +162,41 @@ result delete(LinkListWithTail L, int index)
     free(temp);
     return SUCCESS;
 }
-
-void reverse(LinkListWithTail L)
+// reversed a LinkList.
+// https://hbu.alphacoding.cn/courses/13174/learn/5e736f6b7d87e00fb316578d
+// alphacoding-2.6
+void reverse(LinkList L)
 {
-    LinkNode *node = L->next, *temp;
-    // [head] -> [node] -> [2] -> [3] -> [4]
+    LNode *node = L->next, *temp;
     L->next = NULL;
-    // [head] -> NULL
-    // [head] -> [temp]
-    // [head] -> [node] -> [temp]
-    while (node->next != NULL)
+    while (node != NULL)
     {
-        temp = L->next;
+        // [L]-->[1]-->[2]-->...
+        //       ^node
+        // [L]-->NUL  (L->next = NULL; executed before `while`)
+
+        // [L]   [1]-->[2]-->...
+        //        ^node ^temp
+        temp = node->next;
+
+        // [1]-->NUL   [2]-->...
+        //  ^node       ^temp
+        node->next = L->next;
+
+        // [L]-->[1]-->NUL   [2]-->...
+        //  ^L    ^node
         L->next = node;
-        node->next = temp;
-        node = node->next;
+
+        // [L]-->[1]-->NUL   [2]-->...
+        //                    ^node
+        node = temp;
     }
 }
 
-void deduplication(LinkListWithTail L)
+// remove the duplicated element.
+void deduplication(LinkList L)
 {
-    LinkNode *node = L->next, *iter, *temp;
+    LNode *node = L->next, *iter, *temp;
     while (node->next)
     {
         iter = node;
@@ -210,4 +217,89 @@ void deduplication(LinkListWithTail L)
         }
         node = node->next;
     }
+}
+
+// merge ascending LinkList A and B into a descending LinkList C.
+// https://hbu.alphacoding.cn/courses/13174/learn/5e736f6b7d87e00fb316578d
+// alphacoding-2.5
+int merge(LinkList A, LinkList B, LinkList C)
+{
+    LNode *ta = A->next, *tb = B->next, *temp = C;
+    C->next = NULL;
+    while (ta != NULL && tb != NULL)
+    {
+        if (ta->data > tb->data)
+        {
+            if (temp->data == tb->data)
+            {
+                tb = tb->next;
+                continue;
+            }
+            // LListA: [1]  [2]  [5]
+            //                    ^ta
+            // LListB: [3]  [4]
+            //          ^tb
+            // ta>tb
+            temp = tb;
+
+            // LListB: [3]  [4]
+            //          ^tp  ^tb
+            tb = tb->next;
+
+            // LListC: [_]  [2]  [1]
+            //          ^C   ^Cnext
+            // LListC: [_]  [3]->[2]  [1]
+            //          ^C   ^tp  ^Cnext
+            temp->next = C->next;
+
+            // LListC: [_]x>[2]  [1]
+            //          ^C   ^Cnext
+            // LListC: [_]->[3]->[2]  [1]
+            //          ^C   ^tp  ^Cnext
+            C->next = temp;
+        }
+        else
+        {
+            if (temp->data == ta->data)
+            {
+                ta = ta->next;
+                continue;
+            }
+            temp = ta;
+            ta = ta->next;
+            temp->next = C->next;
+            C->next = temp;
+        }
+    }
+    while (ta != NULL)
+    {
+        temp = ta;
+        ta = ta->next;
+        temp->next = C->next;
+        C->next = temp;
+    }
+    if (tb != NULL)
+    {
+        temp = tb;
+        tb = tb->next;
+        temp->next = C->next;
+        C->next = temp;
+    }
+    return 1;
+}
+
+int main()
+{
+    LinkList a = init(), b = init(), c = init();
+    for (int i = 19; i >= 1; i -= 2)
+        append(a, i);
+    for (int i = 20; i >= 2; i -= 3)
+        append(b, i);
+    print(a);
+    print(b);
+    reverse(b);
+    print(b);
+    merge(a, b, c);
+    print(c);
+    return 0;
 }

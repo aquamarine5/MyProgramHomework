@@ -1,6 +1,7 @@
 /*
  * @Author: aquamarine5 && aquamarine5_@outlook.com
  * Copyright (c) 2025 by @aquamarine5, RC. All Rights Reversed.
+ * lovely lonely, but be a quokka.
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,8 +114,28 @@ void print(SeqList *L)
 
 #pragma endregion
 
-// remove the value in interval [x,y] (x<=y)
 int main()
+{
+    SeqList *seqlist = init();
+    for (int i = 0; i < 10; i++)
+        append(seqlist, rand() % 20);
+    int x = 4, y = 10, offset = 0;
+    print(seqlist);
+    SeqList *offsetList = init();
+    for (int i = 0; i <= seqlist->last; ++i)
+    {
+        if (x <= seqlist->data[i] && seqlist->data[i] <= y)
+            offset++;
+        else
+            seqlist->data[i - offset] = seqlist->data[i];
+    }
+    seqlist->last -= offset;
+    print(seqlist);
+    return 0;
+}
+
+// remove the value in interval [x,y] (x<=y)
+int main2()
 {
     SeqList *seqlist = init();
     for (int i = 0; i < 10; i++)
