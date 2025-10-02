@@ -30,8 +30,8 @@ typedef LinkList LinkListWithTail;
 
 // find the difference set between LinkList A and LinkList B, if the element both contains in two LinkList, the reference in LinkList A should be erased.
 // CAUTION: although the argument of function contains a LinkList C but it was unused, it may be a potential problem.
-//          to pass the checking system, the differential linklist should directly affacted in LinkList A.
-//          LinkList B shouldn't be modified.
+//          to pass the checking system, the differential linklist should directly modified in LinkList A.
+//          LinkList B should not be modified, it was read-only.
 // https://hbu.alphacoding.cn/courses/13174/learn/m52ni460nxs8uw5rghco
 // alphacoding-2.12
 void difference(LinkList *A, LinkList *B, LinkList *C)
