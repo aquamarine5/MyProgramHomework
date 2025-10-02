@@ -68,8 +68,10 @@ void difference(LinkList *A, LinkList *B, LinkList *C)
             //     ^pb
             free(pa);
 
-            // A: [0] x_x [2] [5]
-            //     ^pre    ^pa
+            //     /---------\
+            //     |         ↓
+            // A: [0]  x_x  [2]->[5]
+            //     ^pre      ^pa
             pa = prev->next;
         }
         else if (pa->data > pb->data)
