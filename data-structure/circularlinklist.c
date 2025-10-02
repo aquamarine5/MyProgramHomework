@@ -53,7 +53,7 @@ LinkList createIncreasedRange(int start, int end)
         curr->next = temp;
         // [L] -> [1] -> [2] -> [3] -> [4]
         //  ^                    x      |
-        //  \--------------------/------/
+        //  \---------------------------/
         //                       ^curr
 
         curr = curr->next;
