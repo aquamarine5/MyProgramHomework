@@ -27,7 +27,7 @@ typedef LinkNode *LinkList;
 typedef LinkNode LNode;
 
 // create a circular linklist with the value of interval [start,end] by i++.
-// warning: head node without data is included the linklist, checking the node and head node are unequal is necessary.
+// CAUTION: head node without data is included the linklist, checking the node and head node are unequal is necessary.
 // seealso: https://hbu.alphacoding.cn/courses/13174/learn/5e736f6c7d87e00fb3165792 (alphacoding-2.7::main())
 LinkList createIncreasedRange(int start, int end)
 {
