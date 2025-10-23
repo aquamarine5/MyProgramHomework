@@ -61,3 +61,41 @@ result top(SeqStack *s, datatype *data)
     *data = s->data[s->top];
     return SUCCESS;
 }
+
+bool judge(char ch[])
+{
+    int size = 0, index = 0;
+    while (ch[index] != '\0')
+    {
+        if (ch[index] == '1')
+            size++;
+        else if (ch[index == '0'])
+        {
+            if (size < 1)
+                return false;
+            size--;
+        }
+        index++;
+    }
+    return true;
+}
+
+bool isPalindrome()
+{
+    char str[100];
+    scanf("%s", str);
+    SeqStack *stack = init();
+    int index = 0, buffer;
+    while (str[index] != '\0')
+    {
+        push(stack, str[index++]);
+    }
+    index = 0;
+    while (!isEmpty(stack))
+    {
+        pop(stack, &buffer);
+        if (buffer != str[index++])
+            return false;
+    }
+    return true;
+}

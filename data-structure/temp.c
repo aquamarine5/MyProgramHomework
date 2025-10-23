@@ -1,104 +1,96 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct LNode
+typedef int ElemType;
+typedef struct queue
 {
-    int data;
-    struct LNode *next;
-} LNode, *LinkList;
+    ElemType data;
+    struct queue *next;
+} queue, *LinkQueue;
+typedef struct
+{
+    LinkQueue rear;
+    int length;
+} SqQueue;
 
-void Create_LinkList(LinkList *L, int n)
+void InitQueue(SqQueue *queue)
 {
-    *L = (LinkList)malloc(sizeof(LNode));
-    (*L)->next = NULL;
-    LNode *tail = *L;
-    for (int i = 0; i < n; ++i)
-    {
-        LNode *p = (LNode *)malloc(sizeof(LNode));
-        p->next = NULL;
-        scanf("%d", &p->data);
-        tail->next = p;
-        tail = p;
-    }
-}
-
-void print_LinkList(LinkList L)
-{
-    LNode *p = L->next;
-    while (p)
-    {
-        printf("%d", p->data);
-        p = p->next;
-    }
-}
-
-void ListDelete_LSameNode(LinkList L)
-{
-    // 删除链表中重复元素
+    // 初始化队列，空队列
     // 请在此处编写代码
+    queue->length = 0;
+    queue->rear = NULL;
+}
 
-    LNode *node = L->next, *iter, *temp;
-    while (node->next)
+int EmptyQueue(SqQueue *queue)
+{
+    // 判空操作
+    // 请在此处编写代码
+    return queue->length == 0;
+}
+
+void EnQueue(SqQueue *queue, ElemType data)
+{
+    LinkQueue node = (LinkQueue)malloc(sizeof(struct queue));
+    node->data = data;
+    if (EmptyQueue(queue))
     {
-        iter = node;
-        while (iter->next)
-        {
-            // [1.] -> [2.] -> [1.] -> [5.]
-            // node
-            // iter    i.nx
-            // node.data != i.nx.data (@tips: i.nx=iter.next)
-
-            // $$ next $$
-            // [1.] -> [2.] -> [1.] -> [5.]
-            // node
-            //         iter    i.nx           (iter = iter->next;)
-            // node.data == i.nx.data
-
-            // $$ executed `if` $$            (if(node->data == iter->next->data))
-            // [1.] -> [2.] -> [1.] -> [5.]
-            // node
-            //         iter    i.nx
-            //                 temp           (temp = iter->next;)
-
-            //          /---------------\
-            //          |               ↓
-            // [1.] -> [2.]    x__x -> [5.]   (iter->next = temp->next;)
-            // node
-            //         iter    i.nx
-            //                 temp    t.nx   (free(temp);)
-            if (node->data == iter->next->data)
-            {
-                temp = iter->next;
-                iter->next = temp->next;
-                free(temp);
-            }
-            else
-            {
-                iter = iter->next;
-            }
-        }
-        if (node->next == NULL)
-        {
-            break;
-        }
-        node = node->next;
+        node->next = node;
+        queue->rear = node;
     }
+    else
+    {
+        node->next = queue->rear->next;
+        queue->rear->next = node;
+        queue->rear = node;
+    }
+    queue->length++;
+}
+
+void DelQueue(SqQueue *queue, ElemType *data)
+{
+    if (EmptyQueue(queue))
+    {
+        return;
+    }
+    LinkQueue front = queue->rear->next;
+    *data = front->data;
+    if (queue->rear == front)
+        queue->rear = NULL;
+    else
+        queue->rear->next = front->next;
+    free(front);
+    queue->length--;
 }
 
 int main()
 {
-    // 创建链表
-    LinkList L;
+    int x, n;
+    SqQueue Q;
+    ElemType elem;
+    InitQueue(&Q);
 
-    // 输入数据
-    int count;
-    printf("请输入链表的元素个数：");
-    scanf("%d", &count);
-    printf("请输入链表的数据：\n");
-    Create_LinkList(&L, count);
-    ListDelete_LSameNode(L);
-    printf("删除相关元素后的链表为：");
-    print_LinkList(L);
+    // 判断队列是否为空
+    if (EmptyQueue(&Q))
+        printf("目前是一个空队列！\n");
+    else
+        printf("目前该队列中有元素，不为空！\n");
 
+    // 入队
+    printf("输入入队元素个数：");
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++)
+    {
+        printf("输入第%d个入队元素：", i);
+        scanf("%d", &x);
+        EnQueue(&Q, x);
+    }
+
+    printf("出队元素：");
+    // 出队
+    for (int j = 1; j <= n; j++)
+    {
+        DelQueue(&Q, &elem);
+        printf("%d", elem);
+    }
     return 0;
 }
