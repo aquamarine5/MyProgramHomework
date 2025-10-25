@@ -44,25 +44,21 @@ SPMatrix *times(SPMatrix *A, SPMatrix *B)
     C->rowCount = A->rowCount;
     C->columnCount = B->columnCount;
     int indexC = 0, previousColumnIndex = -1;
-    int *columnElementsSum = (int *)calloc(A->columnCount, sizeof(int));
-    for (int j = 0; j < A->columnCount; j++)
-        columnElementsSum[j] = 0;
+    int *rowElementsSum = (int *)calloc(A->rowCount, sizeof(int));
     for (int indexA = 0; indexA < A->valueCount; indexA++)
+        rowElementsSum[A->data[indexA].x] += A->data[indexA].v;
+    for (int rowIndex = 0; rowIndex < A->rowCount; rowIndex++)
     {
-        columnElementsSum[A->data[indexA].x] += A->data[indexA].v;
-    }
-    for (int columnIndex = 0; columnIndex < A->columnCount; columnIndex++)
-    {
-        if (columnElementsSum[columnIndex] == 0)
+        if (rowElementsSum[rowIndex] == 0)
             continue;
         for (int indexB = 0; indexB < B->valueCount; indexB++)
         {
-            C->data[indexC].x = columnIndex;
+            C->data[indexC].x = rowIndex;
             C->data[indexC].y = B->data[indexB].x;
-            C->data[indexC++].v = columnElementsSum[columnIndex] * B->data[indexB].v;
+            C->data[indexC++].v = rowElementsSum[rowIndex] * B->data[indexB].v;
         }
     }
-    free(columnElementsSum);
+    free(rowElementsSum);
     C->valueCount = indexC;
     return C;
 }

@@ -23,25 +23,29 @@ typedef int *SymmetricMatrix;
 
 inline int getValue(SymmetricMatrix A, int x, int y)
 {
+    // 1-based
     return A[x < y ? (y * (y - 1) / 2 + x - 1) : (x * (x - 1) / 2 + y - 1)];
 }
 
-int *times(SymmetricMatrix A, SymmetricMatrix B, int n)
+int **times(SymmetricMatrix A, SymmetricMatrix B, int n)
 {
     // 0 . . .
     // 1 2 . .
     // 3 4 5 .
     // 6 7 8 9
     // --->
-    int index = 0, zippedSize = (n + 1) * n / 2, sum = 0;
-    int *C = (int *)calloc(zippedSize, sizeof(int));
-    for (int x = 0; x < n; x++)
-        for (int y = 0; y < n; y++)
+    int index = 0, sum = 0;
+    int **C = (int **)malloc(n * sizeof(int *));
+    for (int i = 0; i < n; i++)
+        C[i] = (int *)calloc(n, sizeof(int));
+    for (int x = 1; x <= n; x++)
+        for (int y = 1; y <= n; y++)
         {
             int sum = 0;
-            for (int k = 0; k < n; k++)
-                sum += getValue(A, x, k) * getValue(A, k, y);
-            C[(x - 1) * n + y - 1] = sum;
+            for (int k = 1; k <= n; k++)
+                sum += getValue(A, x, k) * getValue(B, k, y);
+            // 0-based
+            C[x - 1][y - 1] = sum;
         }
     return C;
 }

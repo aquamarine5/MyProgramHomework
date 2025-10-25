@@ -22,7 +22,7 @@
 typedef int *SPMatrixSingleVector;
 SPMatrixSingleVector plus(SPMatrixSingleVector A, SPMatrixSingleVector B, int m, int n)
 {
-    SPMatrixSingleVector *C = (SPMatrixSingleVector *)calloc(MAXSIZE * 3 + 1, sizeof(int));
+    SPMatrixSingleVector C = (SPMatrixSingleVector)calloc(MAXSIZE * 3 + 1, sizeof(int));
     int indexA = 0, indexB = 0, indexC = 0;
     while (A[indexA] != -1 && B[indexB] != -1)
     {
@@ -44,7 +44,7 @@ SPMatrixSingleVector plus(SPMatrixSingleVector A, SPMatrixSingleVector B, int m,
         else
         {
             C[indexC++] = ax;
-            C[indexC++] = bx;
+            C[indexC++] = ay;
             C[indexC++] = av + bv;
             indexA += 3;
             indexB += 3;
@@ -61,4 +61,5 @@ SPMatrixSingleVector plus(SPMatrixSingleVector A, SPMatrixSingleVector B, int m,
             C[indexC++] = B[indexB++];
     }
     C[indexC] = -1;
+    return C;
 }

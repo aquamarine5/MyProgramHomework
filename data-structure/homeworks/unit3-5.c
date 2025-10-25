@@ -52,11 +52,9 @@ SPMatrix *add(SPMatrix *A, SPMatrix *B)
         }
         else
         {
-            SPNode *node = (SPNode *)malloc(sizeof(SPNode));
-            node->v = nodeA->v + nodeB->v;
-            node->i = nodeA->i;
-            node->j = nodeA->j;
-            C->data[++indexC] = *node;
+            C->data[indexC].i = nodeA->i;
+            C->data[indexC].j = nodeA->j;
+            C->data[indexC++].v = nodeA->v + nodeB->v;
             indexA++;
             indexB++;
         }
