@@ -611,6 +611,10 @@ LinkNode *locate(LinkListWithTail L, datatype data)
     return NULL;
 }
 
+bool isSubSequence(LinkList La, LinkList Lb)
+{
+}
+
 int main()
 {
     LinkList a = init(), b = init(), c;
