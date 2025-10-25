@@ -14,12 +14,21 @@
 - `seqstack.c` 顺序栈
 - `doublylinklist.c` 双向链表
 - `question-solutions/operation-stack.c` 中缀表达式计算
+- `homeworks/unit3-*.c` 第三单元所有大题
 
 ## CUMCM2025Problems-A
 
 - 2025年数学建模A题Python代码。
 
-## Contents (Python)
+## JavaGradle
+
+- Java语言实验1~实验15全部。
+
+> [!CAUTION]
+> 部分实验使用了现阶段未学习且不应在学习期间使用的[Lombok](https://projectlombok.org/)，如`@Getter`，`@Setter`，`@AllArgsConstructor`，`@NoArgsConstructor`等，Lombok只是帮助生成了一些*烦人*的模板代码，请关注与其他核心代码。  
+> *或使用Kotlin。*
+
+## Python
 
 - 作业1（20240923，hw1）
 - 作业2（20241018，hw2）
@@ -34,7 +43,7 @@
 - 实验3（20241119，exp3）
 - **结课作业**（20241123，final）
 
-## Contents (C)
+## C
 
 - 上课留的章节课后作业。
 - 程序设计实验作业。
