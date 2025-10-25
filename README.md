@@ -25,8 +25,8 @@
 - Java语言实验1~实验15全部。
 
 > [!WARNING]
-> 部分实验使用了现阶段未学习且不应在学习期间使用的[Lombok](https://projectlombok.org/)，如`@Getter`，`@Setter`，`@AllArgsConstructor`，`@NoArgsConstructor`等，Lombok只是帮助生成了一些*烦人*的模板代码，请关注与其他核心代码。  
-> *或使用Kotlin。*
+> 部分实验使用了现阶段未学习且不应在学习期间使用的 [Lombok](https://projectlombok.org/)，如`@Getter`，`@Setter`，`@AllArgsConstructor`，`@NoArgsConstructor`等，Lombok只是帮助生成了一些*烦人*的模板代码，请关注其他写出的核心功能代码。  
+> *或使用 [Kotlin](https://kotlinlang.org/)。*
 
 ## Python
 

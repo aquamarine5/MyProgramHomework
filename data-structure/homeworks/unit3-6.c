@@ -34,7 +34,6 @@ SPMatrix *times(SPMatrix *A, SPMatrix *B)
 {
     // -->row   ↑
     //          | column
-
     // [a b c d e f]                 [v . . . .]
     // [. . . . . .]                 [. . . . .]
     // [. . . . . .] x [z . . . .] = [. . . . .]
