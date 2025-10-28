@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <MASM Include="array.asm" />
+    <MASM Include="exp1.asm" />
+    <MASM Include="exp3.asm" />
     <MASM Include="Main.asm">
       <FileType>Document</FileType>
     </MASM>
@@ -29,12 +31,15 @@
       <FileType>Document</FileType>
     </MASM>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{7346cdfb-99cc-406b-b8a0-59c7daf3587c}</ProjectGuid>
     <RootNamespace>ASMProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,6 +47,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <VCToolsVersion>14.44.35207</VCToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -94,7 +100,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EntryPointSymbol>
       </EntryPointSymbol>
+      <TargetMachine>NotSet</TargetMachine>
+      <AdditionalLibraryDirectories>C:\Irvine</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);io32.lib;kernel32.lib;irvine32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <MASM>
+      <EnableMASM51Compatibility>true</EnableMASM51Compatibility>
+    </MASM>
+    <MASM>
+      <IncludePaths>C:\Irvine</IncludePaths>
+      <UseSafeExceptionHandlers>false</UseSafeExceptionHandlers>
+    </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

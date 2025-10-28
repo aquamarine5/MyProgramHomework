@@ -24,5 +24,14 @@
     <MASM Include="asmarray.asm">
       <Filter>源文件</Filter>
     </MASM>
+    <MASM Include="exp3.asm">
+      <Filter>源文件</Filter>
+    </MASM>
+    <MASM Include="exp1.asm">
+      <Filter>源文件</Filter>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
   </ItemGroup>
 </Project>

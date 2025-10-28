@@ -6,13 +6,13 @@
 	STATUS_NOT_FOUND EQU -10000
 .code
 ASMArraySum PROC
-	MOV EDI, OFFSET numbers
+	MOV EBX, OFFSET numbers
 	MOV ECX, LENGTHOF numbers
 	XOR EAX, EAX
 
 	@@:
 		ADD EAX, [EDI]
-		ADD EDI, TYPE numbers
+		ADD EBX, TYPE numbers
 		LOOP @B
 	RET
 ASMArraySum ENDP
@@ -64,14 +64,14 @@ ASMArrayCountNonZeroElement PROC
 	MOV EBX, OFFSET intArray
 	MOV ECX, LENGTHOF intArray
 	XOR EAX, EAX
-	@FOREACH:
+	@FOREACH1:
 		CMP SDWORD PTR [EBX],0
 		JE @ISZERO
 		INC EAX
 		@ISZERO:
 			ADD EBX, TYPE intArray
-			LOOP @FOREACH
+			LOOP @FOREACH1
 	RET
 ASMArrayCountNonZeroElement ENDP
 
-END ASMArrayFindFirstNonZeroElement
+END

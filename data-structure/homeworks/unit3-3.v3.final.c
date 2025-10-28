@@ -30,9 +30,7 @@ char *findLongestCommonSubstring(char a[], char b[])
             int currentLength = 0;
             while ((i + currentLength < aLength) && (j + currentLength < bLength) &&
                    (a[i + currentLength] == b[j + currentLength]))
-            {
                 currentLength++;
-            }
             if (currentLength > maxLength)
             {
                 maxLength = currentLength;
