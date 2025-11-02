@@ -22,6 +22,7 @@
     <MASM Include="array.asm" />
     <MASM Include="exp1.asm" />
     <MASM Include="exp3.asm" />
+    <MASM Include="exp4.asm" />
     <MASM Include="Main.asm">
       <FileType>Document</FileType>
     </MASM>

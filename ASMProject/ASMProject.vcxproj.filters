@@ -30,6 +30,9 @@
     <MASM Include="exp1.asm">
       <Filter>源文件</Filter>
     </MASM>
+    <MASM Include="exp4.asm">
+      <Filter>源文件</Filter>
+    </MASM>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

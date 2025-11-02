@@ -38,24 +38,23 @@ DataStringToLowerCase PROC
 DataStringToLowerCase ENDP
 
 CalculateAbsNumber PROC
-    MOV AX, var_a[0]
-    MOV BX, var_a[2]
-    TEST BX, 1000000000000000b
+    MOV AX, [var_a]
+    MOV BX, [var_a+2]
+    TEST BX, 8000h
     JZ @IsPositive
-    NOT BX
-    NOT AX
-    ADD AX, 1
-    ADC BX, 0
+    NEG BX
+    NEG AX
+    SBB BX, 0
 
 @IsPositive:
-    MOV var_b[0], AX
-    MOV var_b[2], BX
+    MOV [var_b], AX
+    MOV [var_b+2], BX
     SHL EBX, 16
     MOV BX, AX
-    MOV EAX, EDX
+    MOV EAX, EBX
     CALL dispuid
     RET
 
 CalculateAbsNumber ENDP
 
-END CalculateAbsNumber
+END 

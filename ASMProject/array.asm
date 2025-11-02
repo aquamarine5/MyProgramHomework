@@ -49,4 +49,4 @@ array_sum PROC
 	; A: Because each element is 4 bytes (32 bits) in size.
 	RET
 array_sum ENDP
-END
+END array_sum
