@@ -4,7 +4,6 @@
 // y is output array, x is input array, n is number of elements
 extern "C" void Reverser(int* y, const int* x, int n);
 
-
 extern "C" void SumArray(int* arr, int size, int* result);
 
 int main() {

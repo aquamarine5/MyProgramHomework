@@ -15,17 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include=".gitignore" />
+    <MASM Include="Array.asm">
+      <Filter>源文件</Filter>
+    </MASM>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="exp4.asm">
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
-    </MASM>
-    <MASM Include="exp1.asm">
-      <Filter>源文件</Filter>
-    </MASM>
-    <MASM Include="exp3.asm">
-      <Filter>源文件</Filter>
-    </MASM>
+    </ClCompile>
   </ItemGroup>
 </Project>
