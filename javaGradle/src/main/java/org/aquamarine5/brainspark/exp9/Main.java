@@ -1,6 +1,5 @@
 package org.aquamarine5.brainspark.exp9;
 
-import org.aquamarine5.brainspark.exp10.Loan;
 
 public class Main {
     public static void main(String[] args) {

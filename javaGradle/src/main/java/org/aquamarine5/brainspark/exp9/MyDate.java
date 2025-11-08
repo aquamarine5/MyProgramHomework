@@ -84,13 +84,4 @@ public class MyDate {
             this.day=daysOfMonth();
         }
     }
-
-    public boolean equals(Object obj){
-        if(this==obj) return true;
-        if(obj instanceof MyDate){
-            MyDate other=(MyDate)obj;
-            return this.year==other.year&&this.month==other.month&&this.day==other.day;
-        }
-        return false;
-    }
 }

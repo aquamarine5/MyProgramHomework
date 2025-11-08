@@ -27,5 +27,11 @@
     <MASM Include="exp3.asm">
       <Filter>源文件</Filter>
     </MASM>
+    <MASM Include="exp5.asm">
+      <Filter>源文件</Filter>
+    </MASM>
+    <MASM Include="exp2.asm">
+      <Filter>源文件</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
