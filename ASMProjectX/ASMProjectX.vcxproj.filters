@@ -15,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <MASM Include="Calculate.asm">
+      <Filter>源文件</Filter>
+    </MASM>
     <MASM Include="Array.asm">
       <Filter>源文件</Filter>
     </MASM>

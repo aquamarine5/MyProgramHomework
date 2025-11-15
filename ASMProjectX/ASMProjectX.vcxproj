@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <MASM Include="Array.asm" />
+    <MASM Include="Calculate.asm" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -33,5 +33,11 @@
     <MASM Include="exp2.asm">
       <Filter>源文件</Filter>
     </MASM>
+    <MASM Include="array.asm">
+      <Filter>源文件</Filter>
+    </MASM>
+    <MASM Include="asmarray.asm">
+      <Filter>源文件</Filter>
+    </MASM>
   </ItemGroup>
 </Project>
