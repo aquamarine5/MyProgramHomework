@@ -18,13 +18,22 @@ Subtract ENDP
 
 LogicalLeftShift3Digits PROC
 	MOV DX, 1214h
-	MOV AX, 1215h
-	MOV EAX, EDX
+	MOV AX, 7777h
 	SHL EAX, 16
-	MOV AX, AX
-	SHL EAX, 3
+	MOV AX, DX
+	; SHL EAX, 3
 	RET
 LogicalLeftShift3Digits ENDP
+
+ExecuteTheCode PROC
+	MOV AX, 1Fh
+	AND AX, AX
+	OR AX, AX
+	XOR AX, AX
+	NOT AX
+	TEST AX, 0Fh
+	RET
+ExecuteTheCode ENDP
 
 StringReplacePoundToWhitespace PROC
 	LEA EDI, string
@@ -61,4 +70,4 @@ SumIfEqualSignAndSubtractOtherwise PROC
 	RET
 SumIfEqualSignAndSubtractOtherwise ENDP
 
-END 
+END

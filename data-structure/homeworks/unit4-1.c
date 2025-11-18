@@ -24,5 +24,6 @@ int getNodes(BiTree root)
 {
     if (root == NULL)
         return 0;
-    return getNodes(root->left) + getNodes(root->right) + 1;
+    return getNodes(root->left) +
+           getNodes(root->right) + 1;
 }

@@ -57,4 +57,15 @@ CalculateAbsNumber PROC
 
 CalculateAbsNumber ENDP
 
-END 
+ExecuteTheCodeExp3 PROC
+    MOV CL, 04
+    SHL DX, CL
+    MOV BL, AH
+    SHL AX, CL
+    SHR BL, CL
+    OR DL, BL
+    SHL EAX, 4
+    RET
+ExecuteTheCodeExp3 ENDP
+
+END

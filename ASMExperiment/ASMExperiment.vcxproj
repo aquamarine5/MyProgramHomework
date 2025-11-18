@@ -21,9 +21,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a4757a2b-0f39-43d0-8e70-ad6d90afa89c}</ProjectGuid>
-    <RootNamespace>ASMProjectX</RootNamespace>
+    <ProjectGuid>{33dd93ce-d3fb-48c9-b9a6-38ec5c78e5ae}</ProjectGuid>
+    <RootNamespace>ASMExperiment</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>ASM_MemoryAddressing</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -124,8 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MASM Include="Array.asm" />
-    <MASM Include="Calculate.asm" />
+    <MASM Include="MemoryAddressing.asm" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
