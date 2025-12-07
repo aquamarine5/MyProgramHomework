@@ -21,7 +21,7 @@ LogicalLeftShift3Digits PROC
 	MOV AX, 7777h
 	SHL EAX, 16
 	MOV AX, DX
-	; SHL EAX, 3
+	SHL EAX, 3
 	RET
 LogicalLeftShift3Digits ENDP
 

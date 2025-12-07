@@ -3,7 +3,7 @@ INCLUDELIB io32.lib
 
 .data
 	pattern DB "BUG"
-	string DB "Fix a Bug, and birth more BUGs."
+	string DB "Fix a Bug, and birth more BxUxGs."
 	success DB "Y",0
 	failure DB "N",0
 	result DB 100 DUP(?)
@@ -14,7 +14,6 @@ FindStringContainPattern PROC
 	MOV EDX, LENGTHOF string
 	LEA ESI, string
 	LEA EDI, pattern
-	SUB EDX, ECX
 @CheckingLoop:
 	CMP EAX, EDX
 	JAE @Failure
@@ -67,4 +66,4 @@ EraseAllWhitespace PROC
 	RET
 EraseAllWhitespace ENDP
 
-END FindStringContainPattern
+END 

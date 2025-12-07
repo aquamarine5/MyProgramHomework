@@ -1,0 +1,1 @@
+{"name":"Local: martix","url":"d:\\ProgramSource\\MyProgramHomework\\data-structure\\martix.c","tests":[{"id":1764665303739,"input":"7 8 3\n5 7 5\n1 8 3","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\ProgramSource\\MyProgramHomework\\data-structure\\martix.c","group":"local","local":true}

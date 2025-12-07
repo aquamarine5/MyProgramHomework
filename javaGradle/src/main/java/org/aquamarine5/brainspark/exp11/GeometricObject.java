@@ -1,20 +1,41 @@
 package org.aquamarine5.brainspark.exp11;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.Date;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public abstract class GeometricObject {
-    private String color="white";
+    private final Date dateCreated;
+    private String color = "white";
     private boolean filled;
-    private final Date dateCreated=new Date();
+
+    protected GeometricObject() {
+        dateCreated = new Date();
+    }
+
+    protected GeometricObject(String color, boolean filled) {
+        this.color = color;
+        this.filled = filled;
+        dateCreated = new Date();
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public boolean isFilled() {
+        return filled;
+    }
+
+    public void setFilled(boolean filled) {
+        this.filled = filled;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
     @Override
     public String toString() {
@@ -26,5 +47,6 @@ public abstract class GeometricObject {
     }
 
     public abstract double getArea();
+
     public abstract double getPerimeter();
 }

@@ -3,7 +3,7 @@ INCLUDELIB io32.lib
 
 .data
     string DB "ABCDEFGH"
-    var_a DW 0BD61h, 0FF46h
+    var_a DW 429Fh, 0B94h
     var_b DW 2 DUP(?)
 
 .code
@@ -68,4 +68,4 @@ ExecuteTheCodeExp3 PROC
     RET
 ExecuteTheCodeExp3 ENDP
 
-END
+END CalculateAbsNumber
