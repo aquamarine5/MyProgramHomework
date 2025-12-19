@@ -22,6 +22,19 @@ void insert(char *s, char *t, int pos)
     strcat(s, t);
     strcat(s, c);
 }
+void reverse(char array[])
+{
+    char str;
+    static int i = 0;
+    scanf("%c", &str);
+    if (str != '#')
+    {
+        reverse(array);
+        array[i++] = str;
+    }
+    array[i] = '\0';
+}
+
 int main()
 {
     char s[200], t[50];

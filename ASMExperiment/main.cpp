@@ -2,24 +2,34 @@
 
 using namespace std;
 
-extern "C" int memoryAddressing(
-	int i,
-	int* v1,
-	int* v2,
-	int* v3,
-	int* v4,
-	int* v5
-);
+//extern "C" int memoryAddressing(
+//	int i,
+//	int* v1,
+//	int* v2,
+//	int* v3,
+//	int* v4,
+//	int* v5
+//);
+//
+//extern "C" int numFibVals;
 
-extern "C" int numFibVals;
+extern "C" int CountTwo(const wchar_t* s, wchar_t c1, wchar_t c2);
 
 int main() {
-	int v1, v2, v3, v4, v5;
-	int ret;
-	for (int i = 0; i < numFibVals; ++i) {
-		ret = memoryAddressing(i, &v1, &v2, &v3, &v4, &v5);
-		printf("i=%2d, ret=%d, v1=%5d, v2=%5d, v3=%5d, v4=%5d, v5=%5d\n",
-			i, ret, v1, v2, v3, v4, v5);
-	}
+	wchar_t c1 = L'e', c2 = L'u';
+	const wchar_t* s = L"love you, partner.";
+	wprintf(L"Count: %d", CountTwo(s, c1, c2));
 	return 0;
 }
+
+//int memoryMain() {
+//	int v1, v2, v3, v4, v5;
+//	int ret;
+//	for (int i = 0; i < numFibVals; ++i) {
+//		ret = memoryAddressing(i, &v1, &v2, &v3, &v4, &v5);
+//		printf("i=%2d, ret=%d, v1=%5d, v2=%5d, v3=%5d, v4=%5d, v5=%5d\n",
+//			i, ret, v1, v2, v3, v4, v5);
+//	}
+//	return 0;
+//}
+//

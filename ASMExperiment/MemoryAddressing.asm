@@ -6,6 +6,7 @@ numFibVals DWORD ($-fibVals)/TYPE fibVals
 PUBLIC numFibVals
 
 .code
+
 ; int memoryAddressing(
 ;	int i,
 ;	int* v1,

@@ -18,6 +18,9 @@
     <MASM Include="MemoryAddressing.asm">
       <Filter>源文件</Filter>
     </MASM>
+    <MASM Include="CountTwo.asm">
+      <Filter>源文件</Filter>
+    </MASM>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

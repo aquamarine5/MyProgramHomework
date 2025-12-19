@@ -10,18 +10,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Triangle extends GeometricObject{
-    private double side1=1.0,side2=1.0,side3=1.0;
+public class Triangle extends GeometricObject {
+    private double side1 = 1.0, side2 = 1.0, side3 = 1.0;
 
     @Override
     public double getArea() {
-        double s=(side1+side2+side3)/2;
-        return Math.sqrt(s*(s-side1)*(s-side2)*(s-side3));
+        double s = (side1 + side2 + side3) / 2;
+        return Math.sqrt(s * (s - side1) * (s - side2) * (s - side3));
     }
 
     @Override
     public double getPerimeter() {
-        return side1+side2+side3;
+        return side1 + side2 + side3;
     }
 
     @Override

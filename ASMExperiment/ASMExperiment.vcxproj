@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <MASM Include="CountTwo.asm" />
     <MASM Include="MemoryAddressing.asm" />
   </ItemGroup>
   <ItemGroup>
