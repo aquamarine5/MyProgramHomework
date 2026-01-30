@@ -24,7 +24,9 @@ typedef struct BiTNode
     struct BiTNode *lchild, *rchild;
 } BiTNode, *BiTree;
 
-int sametree(BiTree t1, BiTree t2)
+typedef BiTree Bitree;
+
+int judgeSameBiTree(BiTree t1, BiTree t2)
 {
     if ((t1 == NULL && t2 != NULL) || (t1 != NULL && t2 == NULL))
         return 0;
@@ -32,46 +34,79 @@ int sametree(BiTree t1, BiTree t2)
         return 1;
     if (t1->data != t2->data)
         return 0;
-    if (sametree(t1->lchild, t2->lchild) == 0)
+    if (judgeSameBiTree(t1->lchild, t2->lchild) == 0)
     {
         return 0;
     }
     else
     {
-        return sametree(t1->rchild, t2->rchild);
+        return judgeSameBiTree(t1->rchild, t2->rchild);
     }
 }
 
 BiTree CreateBitree(TElemType inorder[], TElemType postorder[], int lowin, int highin, int lowpost, int highpost)
 {
     int i = lowin;
-    BiTree bt = (BiTree)malloc(sizeof(BiTNode)); // 申请结点
-    bt->data = postorder[highpost];              // 后序遍历的最后一个结点是根结点
-
-    while (inorder[i] != postorder[highpost]) // 在中序序列中查找根结点
+    BiTree bt = (BiTree)malloc(sizeof(BiTNode));
+    bt->data = postorder[highpost];
+    while (inorder[i] != postorder[highpost])
         i++;
     if (i == lowin)
-        bt->lchild = NULL; // 处理左子树
+        bt->lchild = NULL;
     else
         bt->lchild = CreateBitree(inorder, postorder, lowin, i - 1, lowpost, lowpost + i - lowin - 1);
     if (i == highin)
-        bt->rchild = NULL; // 处理右子树
+        bt->rchild = NULL;
     else
         bt->rchild = CreateBitree(inorder, postorder, i + 1, highin, lowpost + i - lowin, highpost - 1);
     return bt;
 }
 
-BiTree Reverse
+void createBiTree(Bitree *T)
+{
+    char ch = getchar();
+    if (ch == '#')
+    {
+        *T = NULL;
+    }
+    else
+    {
+        *T = (Bitree)malloc(sizeof(BiTNode));
+        (*T)->data = ch;
+        createBiTree(&(*T)->lchild);
+        createBiTree(&(*T)->rchild);
+    }
+}
+
+int countAllNodes(Bitree T)
+{
+    if (T == NULL)
+        return 0;
+    return 1 + countAllNodes(T->lchild) + countAllNodes(T->rchild);
+}
+
+int countLeafNodes(Bitree T)
+{
+    if (T == NULL)
+        return 0;
+    if (T->lchild == NULL && T->rchild == NULL)
+        return 1;
+    return countLeafNodes(T->lchild) + countLeafNodes(T->rchild);
+}
+
+int judgeFullBiTree(Bitree T)
+{
+    return countAllNodes(T) == (countLeafNodes(T) * 2 - 1);
+}
 
 int main()
 {
-    BiTree t1;
-    BiTree t2;
-    TElemType in[] = "DBEAFCG";                                              // 中序
-    TElemType post[] = "DEBFGCA";                                            // 后序
-    t1 = CreateBitree(in, post, 0, strlen(in) - 1, 0, strlen(post) - 1);     // 建立第一个二叉树
-    TElemType in2[] = "DBEAFCG";                                             // 中序
-    TElemType post2[] = "DEBFGCA";                                           // 后序
-    t2 = CreateBitree(in2, post2, 0, strlen(in2) - 1, 0, strlen(post2) - 1); // 建立第二个二叉树
-    printf("%d", sametree(t1, t2));
+    Bitree T = NULL;
+    printf("请以先序遍历的方式输入一棵树（#表示结点没有子树）：");
+    createBiTree(&T);
+    if (judgeFullBiTree(T))
+        printf("YES");
+    else
+        printf("NO");
+    return 0;
 }

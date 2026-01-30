@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <cstdio>
 
 using namespace std;
 
@@ -19,6 +20,9 @@ extern "C" {
     
     // Calculate Standard Deviation
     double CalculateStandardDeviation(double* arr, int count, double avg);
+
+    // Increase Brightness using MMX
+    void MmxIncreaseBrightness(unsigned char* data, int n, unsigned char amount);
 }
 
 int main() {
@@ -60,6 +64,28 @@ int main() {
     double testF2 = 32.0;
     double testC2 = FahrenheitToCelsius(testF2);
     cout << testF2 << " F = " << testC2 << " C" << endl;
+
+    // 5. Image Brightness (MMX)
+    unsigned char pixels[16] = { 
+        10, 50, 100, 150, 200, 230, 240, 250, 
+        5, 30, 80, 120, 180, 210, 220, 255 
+    }; 
+    int nPixels = 16; 
+    unsigned char amount = 20;   // brightness increase 
+ 
+    printf("\nPixels before: "); 
+    for (int i = 0; i < nPixels; ++i) { 
+        printf("%3u ", pixels[i]); 
+    } 
+    printf("\n"); 
+ 
+    MmxIncreaseBrightness(pixels, nPixels, amount); 
+ 
+    printf("Pixels after : "); 
+    for (int i = 0; i < nPixels; ++i) { 
+        printf("%3u ", pixels[i]); 
+    } 
+    printf("\n"); 
 
     return 0;
 }
